@@ -1,7 +1,7 @@
 :root {
   --bg: #050816;
-  --bg-soft: #0b1020;
-  --accent: #5b8dff;
+  --bg-soft: #0f162c;
+  --accent: #6090ff;
   --accent-soft: rgba(91, 141, 255, 0.15);
   --accent-strong: #f97316;
   --text-main: #f9fafb;
@@ -22,7 +22,7 @@ body {
   min-height: 100vh;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
     "Segoe UI", sans-serif;
-  background: radial-gradient(circle at top left, #1d283a 0, #050816 46%, #020617 100%);
+  background: radial-gradient(circle at top left, #1d3e41 0, #050816 46%, #020617 100%);
   color: var(--text-main);
   display: flex;
   align-items: center;
@@ -32,8 +32,8 @@ body {
 
 .shell {
   width: 100%;
-  max-width: 1120px;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.9));
+  max-width: 1920px;
+  background: linear-gradient(135deg, rgba(13, 21, 41, 0.96), rgba(15, 23, 42, 0.9));
   border-radius: 2rem;
   border: 1px solid rgba(148, 163, 184, 0.25);
   box-shadow: var(--shadow-soft);
@@ -48,7 +48,7 @@ body {
   position: absolute;
   inset: -40%;
   background:
-    radial-gradient(circle at top right, rgba(91, 141, 255, 0.18), transparent 60%),
+    radial-gradient(circle at top right, rgba(80, 224, 36, 0.18), transparent 60%),
     radial-gradient(circle at bottom left, rgba(248, 113, 113, 0.18), transparent 55%);
   opacity: 0.6;
   pointer-events: none;
@@ -63,48 +63,25 @@ body {
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 16px;
   margin-bottom: 22px;
+  flex-wrap: wrap;
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: 14px;
+  flex-shrink: 0;
 }
 
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 1.25rem;
-  background: radial-gradient(circle at 20% 0, var(--accent-strong), var(--accent));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #0b1020;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.9);
-}
-
-.brand-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.brand-title {
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  color: #e5e7eb;
-}
-
-.brand-subtitle {
-  font-size: 0.86rem;
-  color: var(--text-muted);
+.brand-logo {
+  height: 56px;
+  max-width: 500px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
 }
 
 .meta {
@@ -113,6 +90,9 @@ body {
   align-items: center;
   font-size: 0.8rem;
   color: var(--text-muted);
+  margin-left: auto;
+  flex-shrink: 0;
+  flex-wrap: wrap;
 }
 
 .meta-pill {
@@ -263,7 +243,7 @@ body {
     var(--accent-soft);
   border-radius: var(--radius-lg);
   border: 1px solid rgba(148, 163, 184, 0.35);
-  padding: 16px 16px 14px;
+  padding: 20px 20px 20px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -285,9 +265,9 @@ body {
 }
 
 .services-title {
-  font-size: 0.78rem;
+  font-size: 1.2em;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.33em;
   color: #e5e7eb;
   font-weight: 600;
 }
@@ -304,14 +284,10 @@ body {
   background: rgba(148, 163, 184, 0.6);
 }
 
-.services-dot:nth-child(1) { opacity: 0.45; }
-.services-dot:nth-child(2) { opacity: 0.65; }
-.services-dot:nth-child(3) { opacity: 1; }
-
 .services-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: 20px;
 }
 
 @media (max-width: 1120px) {
@@ -359,27 +335,36 @@ body {
 
 .service-main {
   display: flex;
-  align-items: center;
+  align-items: left;
   gap: 7px;
-  font-size: 0.88rem;
+  font-size: 1.2rem;
 }
 
 .service-icon {
-  width: 26px;
-  height: 26px;
-  border-radius: 0.9rem;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(15, 23, 42, 0.92);
-  border: 1px solid rgba(148, 163, 184, 0.6);
-  font-size: 1.1rem;
+  font-size: 3rem;
   flex-shrink: 0;
+}
+
+.service-icon img {
+  width: 50px;
+  height: 50px;
+  display: block;
+}
+
+/* Force TrueNAS logo to render as white on dark backgrounds */
+.service-icon img[src$="TruenasLogo.svg"] {
+  filter: brightness(0) invert(1);
 }
 
 .service-text {
   display: flex;
   flex-direction: column;
+  align-items: left;
   gap: 2px;
 }
 
@@ -396,15 +381,15 @@ body {
 
 .service-meta {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  gap: 8px;
   font-size: 0.7rem;
   color: var(--text-muted);
   margin-top: 2px;
+  width: 100%;
 }
 
 .service-tag {
-  padding: 2px 6px;
+  padding: 3px 10px;
   border-radius: 999px;
   border: 1px solid rgba(148, 163, 184, 0.4);
   background: rgba(15, 23, 42, 0.9);
