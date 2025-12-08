@@ -307,7 +307,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 6px;
+  gap: 12px;
   padding: 10px 10px 9px;
   border-radius: var(--radius-md);
   border: 1px solid var(--card-border);
