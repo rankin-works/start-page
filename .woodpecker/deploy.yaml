@@ -1,11 +1,10 @@
+when:
+  - event: push
+    branch: main
+
 steps:
   - name: deploy-start-page
     image: alpine:3.20
-
-    when:
-      event: [push]
-      branch: [main]
-
     environment:
       DEPLOY_HOST: "10.0.0.13"
       DEPLOY_USER: "deploy"
@@ -15,10 +14,13 @@ steps:
 
     commands:
       - apk add --no-cache openssh-client git
+
       - mkdir -p /root/.ssh
       - echo "$DEPLOY_KEY" > /root/.ssh/id_ed25519
       - chmod 600 /root/.ssh/id_ed25519
+
       - echo "Host *" > /root/.ssh/config
       - echo "  IdentityFile /root/.ssh/id_ed25519" >> /root/.ssh/config
       - echo "  StrictHostKeyChecking no" >> /root/.ssh/config
+
       - ssh "$DEPLOY_USER@$DEPLOY_HOST" "cd '$DEPLOY_PATH' && git pull --ff-only"
