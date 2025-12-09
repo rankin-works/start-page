@@ -5,10 +5,9 @@
 aria-label="Minecraft" role="img"
 viewBox="0 0 512 512" stroke-linecap="square" fill="none">
 
-
 <g id="a" transform="matrix(19 11 0 22 76 142)">
 
-<path fill="none" d="M.5.5h9v9h-9"/>
+<path fill="#432" d="M.5.5h9v9h-9"/>
 
 <path stroke="#864" d="M2 8v1h2V8h5V7 H7V5"/>
 
@@ -32,7 +31,7 @@ viewBox="0 0 512 512" stroke-linecap="square" fill="none">
 
 <g transform="matrix(-19 11-19-11 447 159)">
 
-<path fill="none" d="M.5.5h9v9h-9"/>
+<path fill="#7b4" d="M.5.5h9v9h-9"/>
 
 <path stroke="#8c5" d="M1 1zM3 1zM4 7zM3 4v2H1v2h3v1h2V7M2 3h4V1H5v1h3M7 4v1H4M9 4v2H8v3"/>
 
