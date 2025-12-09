@@ -1,6 +1,6 @@
 when:
   # run for normal pushes, and also allow manual runs from the UI
-  event: [push, manual]
+  event: [push]
   branch: [main]
 
 steps:
