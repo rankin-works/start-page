@@ -23,4 +23,4 @@ steps:
       - echo "  IdentityFile /root/.ssh/id_ed25519" >> /root/.ssh/config
       - echo "  StrictHostKeyChecking no" >> /root/.ssh/config
 
-      - ssh "$DEPLOY_USER@$DEPLOY_HOST" "cd '$DEPLOY_PATH' && git fetch origin main && git reset --hard origin/main && git clean -fd"
+      - ssh "$DEPLOY_USER@$DEPLOY_HOST" "cd '$DEPLOY_PATH' && git fetch origin main && git reset --hard origin/main && git clean -fd && VERSION=\$(git rev-parse --short HEAD) && sed -i \"s/style.css?v=__CACHE_BUST__/style.css?v=\$VERSION/\" index.html"
