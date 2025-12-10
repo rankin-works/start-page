@@ -1,0 +1,10 @@
+{
+    "NAS": "https://nas.rankin.works",
+    "Code Server": "https://code.rankin.works",
+    "Git": "https://git.rankin.works", 
+    "Woodpecker CI": "https://ci.rankin.works",
+    "Minecraft": "https://mc.rankin.works",
+    "Dev Environment": "https://dev.rankin.works",
+    "Assets": "https://assets.rankin.works",
+    "Pi-hole": "https://pi.rankin.works"
+}

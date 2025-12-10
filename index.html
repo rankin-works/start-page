@@ -4,12 +4,31 @@
   <meta charset="UTF-8" />
   <title>Rankin Homelab Panel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Private infrastructure dashboard for Rankin homelab services" />
+  
+  <!-- Security -->
+  <meta http-equiv="Content-Security-Policy" 
+        content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self';">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Rankin Homelab Panel" />
+  <meta property="og:description" content="Private infrastructure dashboard" />
+  <meta property="og:image" content="assets/rankin-logo.svg" />
+  
+  <!-- Favicon -->
   <link rel="icon" href="assets/rw-favicon.svg" type="image/svg+xml" />
+  
   <link rel="stylesheet" href="style.css?v=__CACHE_BUST__" />
 </head>
 
 <body>
-  <main class="shell">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
+  <!-- Custom Cursor -->
+  <div class="cursor-dot" id="cursor-dot"></div>
+  <div class="cursor-outline" id="cursor-outline"></div>
+
+  <main class="shell" id="main-content">
     <div class="shell-inner">
       <header class="header">
         <div class="brand">
@@ -18,12 +37,12 @@
 
         <div class="meta">
           <div class="meta-pill">
-            <span class="emoji">🛰️</span>
+            <span class="emoji" aria-hidden="true">🛰️</span>
             <span>Self-hosted stack</span>
           </div>
-          <div class="meta-pill">
-            <span class="emoji">🟢</span>
-            <span>Online</span>
+          <div class="meta-pill" title="All systems operational">
+              <span class="emoji" aria-hidden="true">🟢</span>
+              <span>Online</span>
           </div>
         </div>
       </header>
@@ -37,7 +56,7 @@
               <span>Rankin Homelab Panel</span>
             </div>
             <h1 class="intro-title">
-              Welcome back, <span>Jacob</span>
+              <span>Welcome back, <span class="name">Jacob</span></span>
             </h1>
             <p class="intro-desc">
               Choose an application to get started.
@@ -58,7 +77,7 @@
         </section>
 
         <!-- Right side: services grid -->
-        <section class="services-panel" aria-label="Service links">
+        <nav class="services-panel" aria-label="Service links">
           <header class="services-header">
             <div class="services-header-left">
               <div class="services-title">Services</div>
@@ -67,10 +86,21 @@
 
           <div class="services-grid">
             <!-- NAS -->
-            <a class="service-card" href="https://nas.rankin.works" target="_blank" rel="noopener noreferrer">
+            <a class="service-card" 
+               href="https://nas.rankin.works" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               data-service-url="https://nas.rankin.works"
+               aria-label="Open TrueNAS Dashboard at nas.rankin.works (opens in new tab)">
+              <div class="service-status">
+                <div class="status-indicator" data-status="checking">
+                  <div class="status-dot"></div>
+                  <span class="status-text">Checking...</span>
+                </div>
+              </div>
               <div class="service-main">
                 <div class="service-icon">
-                  <img src="assets/TruenasLogo.svg" alt="TrueNAS" />
+                  <img src="assets/TruenasLogo.svg" alt="" loading="lazy" />
                 </div>
                 <div class="service-text">
                   <div class="service-name">NAS</div>
@@ -78,15 +108,26 @@
                 </div>
               </div>
               <div class="service-meta">
-                <span class="service-tag">TrueNAS Dashboard</span>
+                <span class="service-tag">TrueNAS · Dashboard</span>
               </div>
             </a>
 
             <!-- Code -->
-            <a class="service-card" href="https://code.rankin.works" target="_blank" rel="noopener noreferrer">
+            <a class="service-card" 
+               href="https://code.rankin.works" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               data-service-url="https://code.rankin.works"
+               aria-label="Open VS Code Server at code.rankin.works (opens in new tab)">
+              <div class="service-status">
+                <div class="status-indicator" data-status="checking">
+                  <div class="status-dot"></div>
+                  <span class="status-text">Checking...</span>
+                </div>
+              </div>
               <div class="service-main">
                 <div class="service-icon">
-                  <img src="assets/vscode.svg" alt="vscode" />
+                  <img src="assets/vscode.svg" alt="" loading="lazy" />
                 </div>
                 <div class="service-text">
                   <div class="service-name">Code Server</div>
@@ -99,10 +140,21 @@
             </a>
 
             <!-- Git -->
-            <a class="service-card" href="https://git.rankin.works" target="_blank" rel="noopener noreferrer">
+            <a class="service-card" 
+               href="https://git.rankin.works" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               data-service-url="https://git.rankin.works"
+               aria-label="Open Gitea repositories at git.rankin.works (opens in new tab)">
+              <div class="service-status">
+                <div class="status-indicator" data-status="checking">
+                  <div class="status-dot"></div>
+                  <span class="status-text">Checking...</span>
+                </div>
+              </div>
               <div class="service-main">
                 <div class="service-icon">
-                  <img src="assets/git.svg" alt="git" />
+                  <img src="assets/git.svg" alt="" loading="lazy" />
                 </div>
                 <div class="service-text">
                   <div class="service-name">Git</div>
@@ -115,10 +167,21 @@
             </a>
 
             <!-- Woodpecker CI -->
-            <a class="service-card" href="https://ci.rankin.works" target="_blank" rel="noopener noreferrer">
+            <a class="service-card" 
+               href="https://ci.rankin.works" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               data-service-url="https://ci.rankin.works"
+               aria-label="Open Woodpecker CI pipelines at ci.rankin.works (opens in new tab)">
+              <div class="service-status">
+                <div class="status-indicator" data-status="checking">
+                  <div class="status-dot"></div>
+                  <span class="status-text">Checking...</span>
+                </div>
+              </div>
               <div class="service-main">
                 <div class="service-icon">
-                  <img src="assets/woodpecker-ci.svg" alt="woodpecker-ci" />
+                  <img src="assets/woodpecker-ci.svg" alt="" loading="lazy" />
                 </div>
                 <div class="service-text">
                   <div class="service-name">Woodpecker CI</div>
@@ -126,15 +189,26 @@
                 </div>
               </div>
               <div class="service-meta">
-                <span class="service-tag">Pipelines</span>
+                <span class="service-tag">CI · Pipelines</span>
               </div>
             </a>
 
             <!-- MC -->
-            <a class="service-card" href="https://mc.rankin.works" target="_blank" rel="noopener noreferrer">
+            <a class="service-card" 
+               href="https://mc.rankin.works" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               data-service-url="https://mc.rankin.works"
+               aria-label="Open Minecraft server dashboard at mc.rankin.works (opens in new tab)">
+              <div class="service-status">
+                <div class="status-indicator" data-status="checking">
+                  <div class="status-dot"></div>
+                  <span class="status-text">Checking...</span>
+                </div>
+              </div>
               <div class="service-main">
                 <div class="service-icon">
-                  <img src="assets/minecraft-svgrepo-com.svg" alt="Minecraft" />
+                  <img src="assets/minecraft-svgrepo-com.svg" alt="" loading="lazy" />
                 </div>
                 <div class="service-text">
                   <div class="service-name">Minecraft</div>
@@ -142,14 +216,25 @@
                 </div>
               </div>
               <div class="service-meta">
-                <span class="service-tag">Server Dashboard</span>
+                <span class="service-tag">Server · Dashboard</span>
               </div>
             </a>
 
             <!-- Dev -->
-            <a class="service-card" href="https://dev.rankin.works" target="_blank" rel="noopener noreferrer">
+            <a class="service-card" 
+               href="https://dev.rankin.works" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               data-service-url="https://dev.rankin.works"
+               aria-label="Open development environment at dev.rankin.works (opens in new tab)">
+              <div class="service-status">
+                <div class="status-indicator" data-status="checking">
+                  <div class="status-dot"></div>
+                  <span class="status-text">Checking...</span>
+                </div>
+              </div>
               <div class="service-main">
-                <div class="service-icon">🧪</div>
+                <div class="service-icon" aria-hidden="true">🧪</div>
                 <div class="service-text">
                   <div class="service-name">Dev Env</div>
                   <div class="service-subdomain">dev.rankin.works</div>
@@ -161,24 +246,46 @@
             </a>
 
             <!-- Assets -->
-            <a class="service-card" href="https://assets.rankin.works" target="_blank" rel="noopener noreferrer">
+            <a class="service-card" 
+               href="https://assets.rankin.works" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               data-service-url="https://assets.rankin.works"
+               aria-label="Open assets media library at assets.rankin.works (opens in new tab)">
+              <div class="service-status">
+                <div class="status-indicator" data-status="checking">
+                  <div class="status-dot"></div>
+                  <span class="status-text">Checking...</span>
+                </div>
+              </div>
               <div class="service-main">
-                <div class="service-icon">🎨</div>
+                <div class="service-icon" aria-hidden="true">🎨</div>
                 <div class="service-text">
                   <div class="service-name">Assets</div>
                   <div class="service-subdomain">assets.rankin.works</div>
                 </div>
               </div>
               <div class="service-meta">
-                <span class="service-tag">Media library</span>
+                <span class="service-tag">Media · Library</span>
               </div>
             </a>
 
           <!-- Pi-hole -->
-            <a class="service-card" href="https://pi.rankin.works" target="_blank" rel="noopener noreferrer">
+            <a class="service-card" 
+               href="https://pi.rankin.works" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               data-service-url="https://pi.rankin.works"
+               aria-label="Open Pi-hole DNS filtering at pi.rankin.works (opens in new tab)">
+              <div class="service-status">
+                <div class="status-indicator" data-status="checking">
+                  <div class="status-dot"></div>
+                  <span class="status-text">Checking...</span>
+                </div>
+              </div>
               <div class="service-main">
                 <div class="service-icon">
-                  <img src="assets/pi-hole.svg" alt="pi-hole" />
+                  <img src="assets/pi-hole.svg" alt="" loading="lazy" />
                 </div>
                 <div class="service-text">
                   <div class="service-name">Pi-hole</div>
@@ -186,7 +293,7 @@
                 </div>
               </div>
               <div class="service-meta">
-                <span class="service-tag">DNS Filtering</span>
+                <span class="service-tag">DNS · Filtering</span>
               </div>
             </a>
           </div>
@@ -194,10 +301,11 @@
           <footer class="footer">
             <span>All services are private infrastructure under <strong>rankin.works</strong> and require authentication.</span>
           </footer>
-        </section>
+        </nav>
       </section>
     </div>
   </main>
+  
   <script src="script.js"></script>
 </body>
 </html>
