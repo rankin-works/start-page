@@ -5,6 +5,5 @@
     "Woodpecker CI": "http://10.0.0.13:30166",
     "Minecraft": "https://10.0.0.13:30146",
     "Dev Env": "http://10.0.0.13:5173",
-    "Assets": "http://10.0.0.13:8080",
     "Pi-hole": "http://10.0.0.13:20720"
 }
