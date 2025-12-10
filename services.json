@@ -1,10 +1,10 @@
 {
-    "NAS": "https://nas.rankin.works",
-    "Code Server": "https://code.rankin.works",
-    "Git": "https://git.rankin.works", 
-    "Woodpecker CI": "https://ci.rankin.works",
-    "Minecraft": "https://mc.rankin.works",
-    "Dev Env": "https://dev.rankin.works",
-    "Assets": "https://assets.rankin.works",
-    "Pi-hole": "https://pi.rankin.works"
+    "NAS": "https://10.0.0.13:443",
+    "Code Server": "http://10.0.0.13:8081",
+    "Git": "http://10.0.0.13:3000", 
+    "Woodpecker CI": "http://10.0.0.13:30166",
+    "Minecraft": "https://10.0.0.13:30146",
+    "Dev Env": "http://10.0.0.13:5173",
+    "Assets": "http://10.0.0.13:8080",
+    "Pi-hole": "http://10.0.0.13:20720"
 }
