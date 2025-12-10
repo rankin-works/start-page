@@ -3,17 +3,25 @@
 import asyncio
 import aiohttp
 from aiohttp import web
-import aiohttp_cors
 import socket
 import ssl
 import logging
+import sys
+import traceback
 from typing import Dict, Any
 import json
 import argparse
 from datetime import datetime
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s: %(message)s')
+# Configure logging to be more verbose
+logging.basicConfig(
+    level=logging.DEBUG,  # Changed to DEBUG for more information
+    format='%(asctime)s - %(levelname)s: %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout),  # Explicitly use stdout
+        logging.FileHandler('status_service.log')
+    ]
+)
 logger = logging.getLogger(__name__)
 
 class ServiceStatusChecker:
@@ -21,11 +29,13 @@ class ServiceStatusChecker:
         self.services = services
         self.status_cache = {}
         self.timeout = 5  # seconds
+        logger.info(f"Initialized ServiceStatusChecker with {len(services)} services")
 
     async def check_service(self, name: str, url: str) -> Dict[str, Any]:
         """
         Check the status of a service with multiple strategies
         """
+        logger.debug(f"Checking service: {name} at {url}")
         try:
             # Parse URL
             parsed_url = url.replace('https://', '').replace('http://', '').split('/')
@@ -34,9 +44,11 @@ class ServiceStatusChecker:
             # TCP Connection Check
             try:
                 port = 443 if url.startswith('https') else 80
+                logger.debug(f"Attempting TCP connection to {hostname}:{port}")
                 socket.create_connection((hostname, port), timeout=self.timeout)
                 tcp_check = True
-            except (socket.timeout, ConnectionRefusedError):
+            except (socket.timeout, ConnectionRefusedError) as e:
+                logger.warning(f"TCP connection failed for {name}: {e}")
                 tcp_check = False
 
             # HTTP Head Request Check
@@ -45,12 +57,13 @@ class ServiceStatusChecker:
                     async with aiohttp.ClientSession() as session:
                         async with session.head(url, timeout=aiohttp.ClientTimeout(total=self.timeout)) as response:
                             status = 'online' if response.status < 400 else 'offline'
-                except (aiohttp.ClientError, asyncio.TimeoutError):
+                            logger.info(f"Service {name} status: {status}")
+                except (aiohttp.ClientError, asyncio.TimeoutError) as e:
+                    logger.error(f"HTTP check failed for {name}: {e}")
                     status = 'offline'
             else:
                 status = 'offline'
 
-            logger.info(f"Service {name}: {status}")
             return {
                 'status': status,
                 'last_checked': datetime.now().isoformat()
@@ -58,6 +71,7 @@ class ServiceStatusChecker:
 
         except Exception as e:
             logger.error(f"Unexpected error checking {name}: {e}")
+            logger.error(traceback.format_exc())
             return {
                 'status': 'offline',
                 'last_checked': datetime.now().isoformat(),
@@ -68,6 +82,7 @@ class ServiceStatusChecker:
         """
         Concurrently check status of all services
         """
+        logger.info("Starting service status check")
         tasks = [
             self.check_service(name, url) 
             for name, url in self.services.items()
@@ -82,6 +97,7 @@ class ServiceStatusChecker:
         """
         Web handler to return service statuses
         """
+        logger.debug("Status request received")
         return web.json_response(self.status_cache)
 
     async def periodic_check(self):
@@ -97,8 +113,11 @@ def load_services_config(config_path: str) -> Dict[str, str]:
     Load services from a JSON configuration file
     """
     try:
+        logger.debug(f"Loading services from {config_path}")
         with open(config_path, 'r') as f:
-            return json.load(f)
+            services = json.load(f)
+        logger.info(f"Loaded {len(services)} services from config")
+        return services
     except FileNotFoundError:
         logger.error(f"Config file not found: {config_path}")
         return {}
@@ -107,29 +126,19 @@ def load_services_config(config_path: str) -> Dict[str, str]:
         return {}
 
 async def start_background_tasks(app):
+    logger.info("Starting background tasks")
     app['periodic_check'] = asyncio.create_task(app['checker'].periodic_check())
 
 async def cleanup_background_tasks(app):
+    logger.info("Cleaning up background tasks")
     app['periodic_check'].cancel()
     await app['periodic_check']
 
 def create_app(services: Dict[str, str]):
+    logger.info("Creating web application")
     app = web.Application()
     app['checker'] = ServiceStatusChecker(services)
-    
-    # Add CORS support
-    cors = aiohttp_cors.setup(app, defaults={
-        "*": aiohttp_cors.ResourceOptions(
-            allow_credentials=True,
-            expose_headers="*",
-            allow_headers="*",
-        )
-    })
-
-    # Add routes with CORS
-    resource = cors.add(app.router.add_resource("/status"))
-    cors.add(resource.add_route("GET", app['checker'].status_handler))
-    
+    app.router.add_get('/status', app['checker'].status_handler)
     app.on_startup.append(start_background_tasks)
     app.on_cleanup.append(cleanup_background_tasks)
     return app
@@ -153,5 +162,25 @@ def main():
         return
 
     # Create and run web application
-    app = create_app(services)
-    web.run_app(app, port=args.port, host='127.0.0.1')
+    try:
+        app = create_app(services)
+        logger.info(f"Attempting to start service on port {args.port}")
+        
+        # Use asyncio event loop to run the app
+        loop = asyncio.get_event_loop()
+        runner = web.AppRunner(app)
+        loop.run_until_complete(runner.setup())
+        site = web.TCPSite(runner, '0.0.0.0', args.port)
+        loop.run_until_complete(site.start())
+        
+        logger.info(f"Service successfully started on 0.0.0.0:{args.port}")
+        
+        # Keep the loop running
+        loop.run_forever()
+    except Exception as e:
+        logger.error(f"Failed to start service: {e}")
+        logger.error(traceback.format_exc())
+        raise
+
+if __name__ == '__main__':
+    main()
