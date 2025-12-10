@@ -218,7 +218,7 @@
    */
   async function checkAllServices() {
     console.log('[status] Starting status check...');
-    setAllChecking();
+    // setAllChecking();  // Remove or comment out this line
     
     try {
       const controller = new AbortController();
