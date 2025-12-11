@@ -103,10 +103,10 @@ a, button, [role="button"], input, textarea, select {
 .shell {
   width: 100%;
   max-width: 1920px;
-  background: linear-gradient(135deg, rgba(5, 8, 17, 0.96), rgba(15, 23, 42, 0.9));
-  border-radius: 2rem;
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  box-shadow: var(--shadow-soft);
+  background: transparent; /* No visible container */
+  border-radius: 0; /* No rounded corners */
+  border: none; /* No border */
+  box-shadow: none; /* No shadow */
   padding: 24px 22px 22px;
   position: relative;
   overflow: hidden;
@@ -118,10 +118,8 @@ a, button, [role="button"], input, textarea, select {
   content: "";
   position: absolute;
   inset: -40%;
-  background:
-    radial-gradient(circle at top right, rgba(3, 12, 20, 0.637), transparent 60%),
-    radial-gradient(circle at bottom left, rgba(17, 43, 58, 0.692), transparent 55%);
-  opacity: 0.6;
+  background: transparent; /* Remove glow */
+  opacity: 0;
   pointer-events: none;
   mix-blend-mode: screen;
 }

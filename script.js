@@ -148,8 +148,8 @@
     );
     
     if (isLocalhost || isDevPort || isProxyDev) {
-      console.log('[status] Using local development endpoint');
-      return 'http://localhost:8082/status';
+    console.log('[status] Using local development endpoint');
+    return 'https://status.rankin.works/status';
     }
     
     // Production - use the status subdomain
