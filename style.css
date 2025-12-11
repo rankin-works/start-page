@@ -520,8 +520,9 @@ a, button, [role="button"], input, textarea, select {
   display: block;
 }
 
-/* Force TrueNAS logo to render as white on dark backgrounds */
-.service-icon img[src$="TruenasLogo.svg"] {
+/* Force TrueNAS and Woodpecker logos to render as white on dark backgrounds */
+.service-icon img[src$="TruenasLogo.svg"],
+.service-icon img[src$="woodpecker-ci.svg"] {
   filter: brightness(0) invert(1);
 }
 
