@@ -547,6 +547,7 @@ a, button, [role="button"], input, textarea, select {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: none;
 }
 
 .service-meta {
