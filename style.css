@@ -331,6 +331,101 @@ a, button, [role="button"], input, textarea, select {
   background: var(--accent);
 }
 
+/* System Metrics */
+.system-metrics {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  transition: opacity 0.3s ease;
+}
+
+.system-metrics.refreshing {
+  animation: flash 0.5s ease;
+}
+
+@keyframes flash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.metric-card {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.metric-card:hover {
+  border-color: var(--accent);
+  background: rgba(15, 23, 42, 0.95);
+  transform: translateY(-2px);
+}
+
+.metric-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  filter: grayscale(0.3);
+}
+
+.metric-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.metric-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.metric-secondary {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.metric-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.metric-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.5s ease, background 0.3s ease;
+  width: 0%;
+}
+
+@media (max-width: 860px) {
+  .system-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Services grid */
 
 .services-panel {

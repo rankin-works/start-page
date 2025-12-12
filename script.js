@@ -159,7 +159,7 @@
 
   const STATUS_SERVICE_URL = getStatusServiceUrl();
   const serviceCards = document.querySelectorAll('.service-card');
-  const RECHECK_INTERVAL = 30000; // 30 seconds
+  const RECHECK_INTERVAL = 5000; // 5 seconds
   const INITIAL_DELAY = 1000; // 1 second initial delay
   
   console.log('[status] Status service URL:', STATUS_SERVICE_URL);
@@ -195,6 +195,178 @@
     }
   }
   
+  /**
+   * Format bytes to human-readable format
+   */
+  function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return '0 GB';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  }
+
+  /**
+   * Format uptime seconds to readable format
+   */
+  function formatUptime(seconds) {
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+
+    if (days > 0) {
+      return `${days}d ${hours}h`;
+    } else if (hours > 0) {
+      return `${hours}h ${minutes}m`;
+    } else {
+      return `${minutes}m`;
+    }
+  }
+
+  /**
+   * Update system metrics display
+   */
+  function updateSystemMetrics(systemData) {
+    // Add flash animation to indicate refresh
+    const metricsContainer = document.getElementById('system-metrics');
+    if (metricsContainer) {
+      metricsContainer.classList.add('refreshing');
+      setTimeout(() => {
+        metricsContainer.classList.remove('refreshing');
+      }, 500);
+    }
+
+    // Update CPU usage
+    const cpuElement = document.getElementById('cpu-usage');
+    if (cpuElement && systemData.cpu && systemData.cpu.usage_percent !== undefined) {
+      const cpuUsage = systemData.cpu.usage_percent;
+      cpuElement.textContent = `${cpuUsage}%`;
+
+      // Update progress bar if exists
+      const cpuBar = document.getElementById('cpu-bar');
+      if (cpuBar) {
+        cpuBar.style.width = `${cpuUsage}%`;
+        // Color based on usage
+        if (cpuUsage > 80) {
+          cpuBar.style.background = '#ef4444';
+        } else if (cpuUsage > 60) {
+          cpuBar.style.background = '#f59e0b';
+        } else {
+          cpuBar.style.background = '#22c55e';
+        }
+      }
+    }
+
+    // Update memory usage
+    const memoryElement = document.getElementById('memory-usage');
+    if (memoryElement && systemData.memory) {
+      if (systemData.memory.usage_percent !== undefined) {
+        const memUsage = systemData.memory.usage_percent;
+        memoryElement.textContent = `${memUsage}%`;
+
+        // Update memory total if available
+        const memTotalElement = document.getElementById('memory-total');
+        if (memTotalElement && systemData.memory.total_gb) {
+          memTotalElement.textContent = `${systemData.memory.total_gb} GB`;
+        }
+
+        // Update progress bar
+        const memBar = document.getElementById('memory-bar');
+        if (memBar) {
+          memBar.style.width = `${memUsage}%`;
+          if (memUsage > 80) {
+            memBar.style.background = '#ef4444';
+          } else if (memUsage > 60) {
+            memBar.style.background = '#f59e0b';
+          } else {
+            memBar.style.background = '#22c55e';
+          }
+        }
+      }
+    }
+
+    // Update storage info
+    if (systemData.storage && Array.isArray(systemData.storage)) {
+      systemData.storage.forEach(pool => {
+        if (pool.name === 'NAS') {  // Focus on main pool
+          const storageUsageElement = document.getElementById('storage-usage');
+          const storageFreeElement = document.getElementById('storage-free');
+
+          if (storageUsageElement && pool.usage_percent !== undefined) {
+            storageUsageElement.textContent = `${pool.usage_percent}%`;
+          }
+
+          if (storageFreeElement && pool.free_gb !== undefined) {
+            storageFreeElement.textContent = `${pool.free_gb} GB free`;
+          }
+
+          // Update storage bar
+          const storageBar = document.getElementById('storage-bar');
+          if (storageBar && pool.usage_percent !== undefined) {
+            storageBar.style.width = `${pool.usage_percent}%`;
+            if (pool.usage_percent > 90) {
+              storageBar.style.background = '#ef4444';
+            } else if (pool.usage_percent > 75) {
+              storageBar.style.background = '#f59e0b';
+            } else {
+              storageBar.style.background = '#22c55e';
+            }
+          }
+        }
+      });
+    }
+
+    // Update load averages
+    const loadAvgElement = document.getElementById('load-avg');
+    if (loadAvgElement && systemData.load_avg) {
+      const oneMin = systemData.load_avg['1min'];
+      if (oneMin !== undefined) {
+        loadAvgElement.textContent = oneMin.toFixed(2);
+
+        // Update detail with 5min and 15min
+        const loadAvgDetail = document.getElementById('load-avg-detail');
+        if (loadAvgDetail) {
+          const fiveMin = systemData.load_avg['5min'] || 0;
+          const fifteenMin = systemData.load_avg['15min'] || 0;
+          loadAvgDetail.textContent = `5m: ${fiveMin.toFixed(2)} | 15m: ${fifteenMin.toFixed(2)}`;
+        }
+      }
+    }
+
+    // Update CPU temperature
+    const cpuTempElement = document.getElementById('cpu-temp');
+    if (cpuTempElement && systemData.temperatures) {
+      if (systemData.temperatures.cpu_celsius !== undefined) {
+        cpuTempElement.textContent = `${systemData.temperatures.cpu_celsius}°C`;
+
+        // Calculate average disk temperature if available
+        const diskTempAvg = document.getElementById('disk-temp-avg');
+        if (diskTempAvg && systemData.temperatures.disks) {
+          const diskTemps = Object.values(systemData.temperatures.disks);
+          if (diskTemps.length > 0) {
+            const avgTemp = diskTemps.reduce((a, b) => a + b, 0) / diskTemps.length;
+            diskTempAvg.textContent = `Disks avg: ${avgTemp.toFixed(1)}°C`;
+          }
+        }
+      }
+    }
+
+    // Update system uptime
+    const uptimeElement = document.getElementById('system-uptime');
+    if (uptimeElement && systemData.system) {
+      if (systemData.system.uptime_seconds) {
+        uptimeElement.textContent = formatUptime(systemData.system.uptime_seconds);
+      }
+
+      // Update hostname
+      const hostnameElement = document.getElementById('system-hostname');
+      if (hostnameElement && systemData.system.hostname) {
+        hostnameElement.textContent = systemData.system.hostname;
+      }
+    }
+  }
+
   /**
    * Set all cards to checking state
    */
@@ -238,9 +410,13 @@
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       
-      const serviceStatuses = await response.json();
-      console.log('[status] Received statuses:', serviceStatuses);
-      
+      const data = await response.json();
+      console.log('[status] Received data:', data);
+
+      // Extract services and system data
+      const serviceStatuses = data.services || data;  // Backwards compatible
+      const systemData = data.system || {};
+
       // Update each service card based on the response
       serviceCards.forEach(card => {
         const serviceNameEl = card.querySelector('.service-name');
@@ -248,10 +424,10 @@
           console.warn('[status] Card missing service-name element');
           return;
         }
-        
+
         const serviceName = serviceNameEl.textContent.trim();
         const serviceData = serviceStatuses[serviceName];
-        
+
         if (serviceData) {
           const status = serviceData.status || 'offline';
           console.log(`[status] ${serviceName}: ${status}`);
@@ -262,6 +438,12 @@
           updateStatusIndicator(card, 'offline');
         }
       });
+
+      // Update system metrics if available
+      if (Object.keys(systemData).length > 0) {
+        console.log('[status] Updating system metrics:', systemData);
+        updateSystemMetrics(systemData);
+      }
       
     } catch (error) {
       if (error.name === 'AbortError') {

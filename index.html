@@ -63,7 +63,7 @@
               <span>Welcome back, <span class="name">Jacob</span></span>
             </h1>
             <p class="intro-desc">
-              Choose an application to get started. Test.
+              Choose an application to get started.
             </p>
 
             <div class="intro-tags">
@@ -76,6 +76,71 @@
               <span class="tag">
                 <span class="tag-dot"></span> Personal infra
               </span>
+            </div>
+
+            <!-- System Metrics -->
+            <div class="system-metrics" id="system-metrics">
+              <div class="metric-card">
+                <div class="metric-icon">🖥️</div>
+                <div class="metric-content">
+                  <div class="metric-label">CPU Usage</div>
+                  <div class="metric-value" id="cpu-usage">--</div>
+                  <div class="metric-bar">
+                    <div class="metric-bar-fill" id="cpu-bar"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-icon">💾</div>
+                <div class="metric-content">
+                  <div class="metric-label">Memory</div>
+                  <div class="metric-value" id="memory-usage">--</div>
+                  <div class="metric-secondary" id="memory-total"></div>
+                  <div class="metric-bar">
+                    <div class="metric-bar-fill" id="memory-bar"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-icon">💿</div>
+                <div class="metric-content">
+                  <div class="metric-label">Storage (NAS)</div>
+                  <div class="metric-value" id="storage-usage">--</div>
+                  <div class="metric-secondary" id="storage-free"></div>
+                  <div class="metric-bar">
+                    <div class="metric-bar-fill" id="storage-bar"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-icon">📊</div>
+                <div class="metric-content">
+                  <div class="metric-label">Load Average</div>
+                  <div class="metric-value" id="load-avg">--</div>
+                  <div class="metric-secondary" id="load-avg-detail"></div>
+                </div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-icon">🌡️</div>
+                <div class="metric-content">
+                  <div class="metric-label">CPU Temp</div>
+                  <div class="metric-value" id="cpu-temp">--</div>
+                  <div class="metric-secondary" id="disk-temp-avg"></div>
+                </div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-icon">⏱️</div>
+                <div class="metric-content">
+                  <div class="metric-label">Uptime</div>
+                  <div class="metric-value" id="system-uptime">--</div>
+                  <div class="metric-secondary" id="system-hostname"></div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
