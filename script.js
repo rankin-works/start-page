@@ -132,6 +132,31 @@
   });
 })();
 
+// Live Date and Time Display
+(function() {
+  function updateDateTime() {
+    const dateTimeElement = document.getElementById('intro-datetime');
+    if (!dateTimeElement) return;
+
+    const now = new Date();
+    const options = {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    };
+    dateTimeElement.textContent = now.toLocaleString('en-US', options);
+  }
+
+  // Update immediately
+  updateDateTime();
+
+  // Update every second
+  setInterval(updateDateTime, 1000);
+})();
+
 // Service Status Checker
 (function() {
   // Determine the appropriate status service URL based on environment
@@ -363,6 +388,18 @@
       const hostnameElement = document.getElementById('system-hostname');
       if (hostnameElement && systemData.system.hostname) {
         hostnameElement.textContent = systemData.system.hostname;
+      }
+
+      // Update TrueNAS version in intro tags
+      const versionTagElement = document.getElementById('truenas-version');
+      if (versionTagElement && systemData.system.version) {
+        versionTagElement.textContent = `TrueNAS ${systemData.system.version}`;
+      }
+
+      // Update processor model tag
+      const processorElement = document.getElementById('processor-model');
+      if (processorElement && systemData.system.model) {
+        processorElement.textContent = systemData.system.model;
       }
     }
   }

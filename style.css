@@ -174,8 +174,26 @@ a, button, [role="button"], input, textarea, select {
   gap: 6px;
 }
 
+.meta-pill-link {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.meta-pill-link:hover {
+  border-color: var(--accent);
+  background: radial-gradient(circle at top left, rgba(70, 188, 192, 0.3), transparent 60%);
+  transform: translateY(-2px);
+}
+
 .meta-pill span.emoji {
   font-size: 0.95rem;
+}
+
+.meta-pill-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 /* Pulse animation for online status indicator */
@@ -261,6 +279,13 @@ a, button, [role="button"], input, textarea, select {
   z-index: 1;
 }
 
+.intro-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
 .intro-badge {
   display: inline-flex;
   align-items: center;
@@ -270,8 +295,17 @@ a, button, [role="button"], input, textarea, select {
   border: 1px solid rgba(156, 163, 175, 0.4);
   font-size: 0.72rem;
   color: var(--text-muted);
-  margin-bottom: 12px;
   background: rgba(15, 23, 42, 0.7);
+}
+
+.intro-datetime {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(156, 163, 175, 0.4);
+  background: rgba(15, 23, 42, 0.7);
+  font-variant-numeric: tabular-nums;
 }
 
 .intro-badge-dot {

@@ -40,10 +40,10 @@
         </div>
 
         <div class="meta">
-          <div class="meta-pill">
-            <span class="emoji" aria-hidden="true">🛰️</span>
-            <span>Self-hosted stack</span>
-          </div>
+          <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="meta-pill meta-pill-link">
+            <img src="assets/cloudflare.svg" alt="" class="meta-pill-icon" />
+            <span>Cloudflare</span>
+          </a>
           <div class="meta-pill" title="All systems operational">
               <span class="emoji" aria-hidden="true">🟢</span>
               <span>Online</span>
@@ -55,9 +55,12 @@
         <!-- Left side: intro / description -->
         <section class="intro" aria-label="Overview">
           <div class="intro-inner">
-            <div class="intro-badge">
-              <span class="intro-badge-dot"></span>
-              <span>Rankin Homelab Panel</span>
+            <div class="intro-header">
+              <div class="intro-badge">
+                <span class="intro-badge-dot"></span>
+                <span>Rankin Homelab Panel</span>
+              </div>
+              <div class="intro-datetime" id="intro-datetime">--</div>
             </div>
             <h1 class="intro-title">
               <span>Welcome back, <span class="name">Jacob</span></span>
@@ -68,13 +71,13 @@
 
             <div class="intro-tags">
               <span class="tag">
-                <span class="tag-dot"></span> TrueNAS + Cloudflare
+                <span class="tag-dot"></span> <span id="truenas-version">TrueNAS</span>
               </span>
               <span class="tag">
-                <span class="tag-dot"></span> Self-hosted dev
+                <span class="tag-dot"></span> Self-hosted
               </span>
               <span class="tag">
-                <span class="tag-dot"></span> Personal infra
+                <span class="tag-dot"></span> <span id="processor-model">--</span>
               </span>
             </div>
 
