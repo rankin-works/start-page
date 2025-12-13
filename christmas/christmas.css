@@ -371,7 +371,7 @@ body {
 }
 
 .sort-select[type="button"] {
-  cursor: pointer;
+  cursor: none;
 }
 
 select.sort-select {
