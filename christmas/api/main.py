@@ -13,6 +13,9 @@ import secrets
 import os
 from datetime import datetime
 from pathlib import Path
+import requests
+from bs4 import BeautifulSoup
+import re
 
 app = FastAPI(title="Christmas Wishlist API", version="1.0.0")
 security = HTTPBasic()
@@ -183,6 +186,80 @@ def claim_item(item_id: int, claimed_by: str):
             return {"message": "Item claimed successfully", "claimed_by": claimed_by}
 
     raise HTTPException(status_code=404, detail="Item not found")
+
+@app.post("/api/fetch-product-image")
+def fetch_product_image(url: str):
+    """
+    Fetch product image from a URL (primarily Amazon)
+    Returns the main product image URL
+    """
+    try:
+        # Add user agent to avoid being blocked
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+
+        # Fetch the page
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+
+        # Parse HTML
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        image_url = None
+
+        # Try multiple methods to find the product image
+        # Method 1: Amazon-specific - look for main image
+        if 'amazon.com' in url:
+            # Try to find the main product image
+            img_tag = soup.find('img', {'id': 'landingImage'}) or \
+                     soup.find('img', {'data-old-hires': True}) or \
+                     soup.find('img', {'data-a-dynamic-image': True})
+
+            if img_tag:
+                # Try different attributes
+                image_url = img_tag.get('data-old-hires') or \
+                           img_tag.get('src') or \
+                           img_tag.get('data-src')
+
+                # Extract from data-a-dynamic-image JSON if present
+                if not image_url and img_tag.get('data-a-dynamic-image'):
+                    try:
+                        dynamic_images = json.loads(img_tag['data-a-dynamic-image'])
+                        if dynamic_images:
+                            # Get the first (usually highest quality) image
+                            image_url = list(dynamic_images.keys())[0]
+                    except:
+                        pass
+
+        # Method 2: Generic - look for og:image meta tag
+        if not image_url:
+            og_image = soup.find('meta', property='og:image')
+            if og_image:
+                image_url = og_image.get('content')
+
+        # Method 3: Look for largest image on page
+        if not image_url:
+            images = soup.find_all('img')
+            for img in images:
+                src = img.get('src') or img.get('data-src')
+                if src and ('http' in src or src.startswith('//')):
+                    image_url = src
+                    break
+
+        if not image_url:
+            raise HTTPException(status_code=404, detail="Could not find product image")
+
+        # Clean up URL
+        if image_url.startswith('//'):
+            image_url = 'https:' + image_url
+
+        return {"image_url": image_url}
+
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=400, detail=f"Failed to fetch URL: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

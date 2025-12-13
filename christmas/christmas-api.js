@@ -153,6 +153,51 @@ async function apiRequest(endpoint, options = {}) {
   const clearListBtn = document.getElementById('clear-list-btn');
 
   let wishlistItems = [];
+  let fetchedImageUrl = null; // Store fetched image URL
+
+  // Auto-fetch product image when URL is pasted
+  const urlInput = document.getElementById('item-url');
+  const imageInput = document.getElementById('item-image');
+  let fetchTimeout = null;
+
+  urlInput.addEventListener('input', async () => {
+    // Clear previous timeout
+    if (fetchTimeout) clearTimeout(fetchTimeout);
+
+    const url = urlInput.value.trim();
+
+    // Only auto-fetch for URLs that look like product pages
+    if (url && (url.includes('amazon.com') || url.includes('amzn'))) {
+      // Debounce - wait 1 second after user stops typing
+      fetchTimeout = setTimeout(async () => {
+        try {
+          const response = await apiRequest('/api/fetch-product-image', {
+            method: 'POST',
+            body: JSON.stringify({ url })
+          });
+
+          if (response && response.image_url) {
+            fetchedImageUrl = response.image_url;
+            console.log('Auto-fetched product image:', fetchedImageUrl);
+
+            // Show a subtle indicator that image was fetched
+            const imageLabel = document.querySelector('label[for="item-image"]');
+            if (imageLabel) {
+              imageLabel.textContent = 'Image (auto-fetched from URL ✓)';
+              setTimeout(() => {
+                imageLabel.textContent = 'Image';
+              }, 3000);
+            }
+          }
+        } catch (error) {
+          console.log('Could not auto-fetch image:', error);
+          fetchedImageUrl = null;
+        }
+      }, 1000);
+    } else {
+      fetchedImageUrl = null;
+    }
+  });
 
   // Load items from API
   async function loadItems() {
@@ -256,9 +301,11 @@ async function apiRequest(endpoint, options = {}) {
 
     let imageData = null;
 
-    // Handle image upload
+    // Handle image upload - prioritize uploaded file, then auto-fetched image
     if (imageFile) {
       imageData = await fileToBase64(imageFile);
+    } else if (fetchedImageUrl) {
+      imageData = fetchedImageUrl; // Use the fetched image URL
     }
 
     const newItem = {
@@ -278,6 +325,7 @@ async function apiRequest(endpoint, options = {}) {
       });
 
       form.reset();
+      fetchedImageUrl = null; // Reset fetched image
       await loadItems();
       showSuccess('Item added successfully!');
     } catch (error) {
