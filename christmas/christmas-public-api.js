@@ -238,21 +238,94 @@ const API_BASE_URL = isLocalDevelopment
     }
   }
 
+  // Show custom modal
+  function showModal(title, subtitle, isUnclaim = false) {
+    return new Promise((resolve, reject) => {
+      const modal = document.getElementById('claim-modal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalSubtitle = document.getElementById('modal-subtitle');
+      const form = document.getElementById('claim-form');
+      const nameInput = document.getElementById('modal-name');
+      const passwordInput = document.getElementById('modal-password');
+      const passwordGroup = document.getElementById('password-group');
+      const submitBtn = document.getElementById('modal-submit');
+      const cancelBtn = document.getElementById('modal-cancel');
+
+      // Configure modal
+      modalTitle.textContent = title;
+      modalSubtitle.textContent = subtitle;
+
+      if (isUnclaim) {
+        nameInput.parentElement.style.display = 'none';
+        passwordGroup.querySelector('label').textContent = 'Enter Password';
+        passwordInput.placeholder = 'Enter the password to unclaim';
+        submitBtn.textContent = 'Unclaim';
+      } else {
+        nameInput.parentElement.style.display = 'flex';
+        passwordGroup.querySelector('label').textContent = 'Password';
+        passwordInput.placeholder = 'Set a password to protect this claim';
+        submitBtn.textContent = 'Claim Item';
+      }
+
+      // Reset form
+      form.reset();
+
+      // Show modal
+      modal.classList.add('active');
+      nameInput.focus();
+
+      // Handle form submission
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const name = nameInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        modal.classList.remove('active');
+        form.removeEventListener('submit', handleSubmit);
+        cancelBtn.removeEventListener('click', handleCancel);
+
+        resolve({ name, password });
+      };
+
+      // Handle cancel
+      const handleCancel = () => {
+        modal.classList.remove('active');
+        form.removeEventListener('submit', handleSubmit);
+        cancelBtn.removeEventListener('click', handleCancel);
+        reject('cancelled');
+      };
+
+      // Handle backdrop click
+      const handleBackdropClick = (e) => {
+        if (e.target === modal) {
+          handleCancel();
+        }
+      };
+
+      // Handle escape key
+      const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+          handleCancel();
+          document.removeEventListener('keydown', handleEscape);
+        }
+      };
+
+      form.addEventListener('submit', handleSubmit);
+      cancelBtn.addEventListener('click', handleCancel);
+      modal.addEventListener('click', handleBackdropClick);
+      document.addEventListener('keydown', handleEscape);
+    });
+  }
+
   // Claim item (mark as claimed without spoiling the surprise)
   async function claimItem(itemId) {
-    const giverName = prompt('Enter your name (so Jake knows who is getting this gift):');
-    if (!giverName || giverName.trim() === '') {
-      return; // User cancelled
-    }
-
-    const password = prompt('Set a password to protect this claim:\n(You\'ll need this password to unclaim the item later)');
-    if (!password || password.trim() === '') {
-      alert('Password is required to claim an item.');
-      return;
-    }
-
     try {
-      const response = await fetch(`${API_BASE_URL}/api/wishlist/${itemId}/claim?claimed_by=${encodeURIComponent(giverName.trim())}&password=${encodeURIComponent(password)}`, {
+      const { name, password } = await showModal(
+        'Claim Item',
+        'Enter your name and set a password. You\'ll need this password to unclaim the item later.'
+      );
+
+      const response = await fetch(`${API_BASE_URL}/api/wishlist/${itemId}/claim?claimed_by=${encodeURIComponent(name)}&password=${encodeURIComponent(password)}`, {
         method: 'PATCH'
       });
 
@@ -261,9 +334,11 @@ const API_BASE_URL = isLocalDevelopment
       }
 
       await loadItems();
-      // Show success message
-      alert(`Great! You've claimed this item. Jake won't see who claimed it unless he peeks!\n\nRemember your password: you'll need it to unclaim this item.`);
+      alert(`Great! You've claimed this item. Jake won't see who claimed it unless he peeks!`);
     } catch (error) {
+      if (error === 'cancelled') {
+        return; // User cancelled
+      }
       console.error('Failed to claim item:', error);
       alert('Failed to claim item. Please try again.');
     }
@@ -271,12 +346,13 @@ const API_BASE_URL = isLocalDevelopment
 
   // Unclaim item (requires password verification)
   async function unclaimItem(itemId, claimedBy) {
-    const password = prompt(`This item was claimed by "${claimedBy}".\n\nEnter the password to remove the claim:`);
-    if (!password || password.trim() === '') {
-      return; // User cancelled
-    }
-
     try {
+      const { password } = await showModal(
+        'Unclaim Item',
+        `This item was claimed by "${claimedBy}". Enter the password to remove the claim.`,
+        true
+      );
+
       const response = await fetch(`${API_BASE_URL}/api/wishlist/${itemId}/claim?claimed_by=&password=${encodeURIComponent(password)}`, {
         method: 'PATCH'
       });
@@ -293,6 +369,9 @@ const API_BASE_URL = isLocalDevelopment
       await loadItems();
       alert('Item unclaimed successfully!');
     } catch (error) {
+      if (error === 'cancelled') {
+        return; // User cancelled
+      }
       console.error('Failed to unclaim item:', error);
       alert('Failed to unclaim item. Please try again.');
     }

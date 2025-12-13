@@ -41,6 +41,140 @@
       opacity: 0.8;
     }
 
+    /* Custom Modal Styles */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .modal-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .modal-form-group label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .modal-form-group input {
+      padding: 12px 14px;
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    [data-theme="light"] .modal-form-group input {
+      background: rgba(248, 250, 252, 0.8);
+      border: 1px solid rgba(71, 85, 105, 0.2);
+    }
+
+    .modal-form-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(70, 188, 192, 0.1);
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .modal-btn-primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 4px 12px rgba(70, 188, 192, 0.3);
+    }
+
+    .modal-btn-primary:hover {
+      background: #3aa8ac;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(70, 188, 192, 0.4);
+    }
+
+    .modal-btn-secondary {
+      background: rgba(148, 163, 184, 0.2);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+    }
+
+    .modal-btn-secondary:hover {
+      background: rgba(148, 163, 184, 0.3);
+      border-color: var(--accent);
+    }
+
     /* Snowfall effect */
     .snowflake {
       position: absolute;
@@ -85,6 +219,28 @@
   <!-- Custom Cursor -->
   <div class="cursor-dot" id="cursor-dot"></div>
   <div class="cursor-outline" id="cursor-outline"></div>
+
+  <!-- Custom Modal -->
+  <div id="claim-modal" class="modal-backdrop">
+    <div class="modal-content">
+      <h2 class="modal-title" id="modal-title">Claim Item</h2>
+      <p class="modal-subtitle" id="modal-subtitle">Enter your details to claim this gift</p>
+      <form class="modal-form" id="claim-form">
+        <div class="modal-form-group">
+          <label for="modal-name">Your Name</label>
+          <input type="text" id="modal-name" placeholder="e.g., Mom" required />
+        </div>
+        <div class="modal-form-group" id="password-group">
+          <label for="modal-password">Password</label>
+          <input type="password" id="modal-password" placeholder="Set a password to protect this claim" required />
+        </div>
+        <div class="modal-buttons">
+          <button type="button" class="modal-btn modal-btn-secondary" id="modal-cancel">Cancel</button>
+          <button type="submit" class="modal-btn modal-btn-primary" id="modal-submit">Claim Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <main class="shell" id="main-content">
     <div class="shell-inner">
