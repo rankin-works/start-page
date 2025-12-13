@@ -16,11 +16,16 @@
     .add-item-card {
       display: none;
     }
-    .item-actions {
-      display: none;
-    }
+    /* Keep item-actions visible for claim button */
     .wishlist-stats button {
       display: none;
+    }
+    /* Hide the purchased badge - we don't want to spoil the surprise */
+    .wishlist-item.purchased::after {
+      display: none !important;
+    }
+    .wishlist-item.claimed::after {
+      display: none !important;
     }
 
     /* Snowfall effect */
@@ -137,6 +142,12 @@
           <div class="wishlist-header">
             <h2>Wishlist</h2>
             <div class="wishlist-stats">
+              <select id="sort-select" class="sort-select">
+                <option value="default">Sort by: Default</option>
+                <option value="priority">Sort by: Priority</option>
+                <option value="name">Sort by: Name</option>
+                <option value="price">Sort by: Price</option>
+              </select>
               <span id="item-count">0 items</span>
             </div>
           </div>

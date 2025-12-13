@@ -242,6 +242,33 @@ body {
   color: var(--text-muted);
 }
 
+.sort-select {
+  padding: 6px 12px;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  color: var(--text-main);
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+[data-theme="light"] .sort-select {
+  background: rgba(248, 250, 252, 0.8);
+  border: 1px solid rgba(71, 85, 105, 0.2);
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(70, 188, 192, 0.1);
+}
+
+.sort-select:hover {
+  border-color: var(--accent);
+}
+
 /* Wishlist Items */
 .wishlist-items {
   display: grid;
@@ -329,6 +356,16 @@ body {
   font-size: 1rem;
 }
 
+.store-name {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-left: 6px;
+  padding: 2px 6px;
+  background: rgba(148, 163, 184, 0.15);
+  border-radius: 4px;
+}
+
 .priority-badge {
   padding: 2px 8px;
   border-radius: 12px;
@@ -413,6 +450,20 @@ body {
 .action-btn.delete-btn:hover {
   background: rgba(239, 68, 68, 0.1);
   border-color: #ef4444;
+}
+
+.action-btn.claim-btn {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.action-btn.claim-btn:hover {
+  background: rgba(70, 188, 192, 0.1);
+  border-color: var(--accent);
+}
+
+.wishlist-item.claimed {
+  opacity: 0.8;
 }
 
 /* Empty State */

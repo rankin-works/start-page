@@ -116,8 +116,10 @@ const API_BASE_URL = isLocalDevelopment
   const wishlistContainer = document.getElementById('wishlist-items');
   const emptyState = document.getElementById('empty-state');
   const itemCount = document.getElementById('item-count');
+  const sortSelect = document.getElementById('sort-select');
 
   let wishlistItems = [];
+  let currentSort = 'default'; // Track current sort method
 
   // Load items from API
   async function loadItems() {
@@ -128,6 +130,7 @@ const API_BASE_URL = isLocalDevelopment
       }
       const data = await response.json();
       wishlistItems = data.items;
+      sortItems();
       renderItems();
     } catch (error) {
       console.error('Failed to load wishlist:', error);
@@ -138,6 +141,43 @@ const API_BASE_URL = isLocalDevelopment
         <small>Please try refreshing the page</small>
       `;
     }
+  }
+
+  // Sort items based on current sort method
+  function sortItems() {
+    const sortedItems = [...wishlistItems];
+
+    switch (currentSort) {
+      case 'priority':
+        // must > want > nice
+        const priorityOrder = { must: 1, want: 2, nice: 3 };
+        sortedItems.sort((a, b) => {
+          const priorityA = priorityOrder[a.priority] || 999;
+          const priorityB = priorityOrder[b.priority] || 999;
+          return priorityA - priorityB;
+        });
+        break;
+
+      case 'name':
+        sortedItems.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+
+      case 'price':
+        sortedItems.sort((a, b) => {
+          // Extract numeric value from price string
+          const priceA = parseFloat(a.price?.replace(/[^0-9.]/g, '') || '0');
+          const priceB = parseFloat(b.price?.replace(/[^0-9.]/g, '') || '0');
+          return priceB - priceA; // Descending order
+        });
+        break;
+
+      case 'default':
+      default:
+        // Keep original order (newest first based on insertion)
+        break;
+    }
+
+    wishlistItems = sortedItems;
   }
 
   // Render all items (read-only)
@@ -159,18 +199,105 @@ const API_BASE_URL = isLocalDevelopment
     });
   }
 
+  // Extract store name from URL
+  function getStoreName(url) {
+    if (!url) return null;
+
+    try {
+      const hostname = new URL(url).hostname.toLowerCase();
+
+      // Map common domains to store names
+      if (hostname.includes('amazon.com') || hostname.includes('amzn') || hostname.includes('a.co')) {
+        return 'Amazon';
+      } else if (hostname.includes('target.com')) {
+        return 'Target';
+      } else if (hostname.includes('ebay.com')) {
+        return 'eBay';
+      } else if (hostname.includes('walmart.com')) {
+        return 'Walmart';
+      } else if (hostname.includes('bestbuy.com')) {
+        return 'Best Buy';
+      } else if (hostname.includes('etsy.com')) {
+        return 'Etsy';
+      } else if (hostname.includes('newegg.com')) {
+        return 'Newegg';
+      } else {
+        // Generic - extract domain name
+        const parts = hostname.replace('www.', '').split('.');
+        return parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Claim item (mark as purchased without spoiling the surprise)
+  async function claimItem(itemId) {
+    const giverName = prompt('Enter your name (so Jake knows who got this gift):');
+    if (!giverName || giverName.trim() === '') {
+      return; // User cancelled
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/wishlist/${itemId}/claim?claimed_by=${encodeURIComponent(giverName.trim())}`, {
+        method: 'PATCH'
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to claim item');
+      }
+
+      await loadItems();
+      // Show success message
+      alert(`Great! You've marked this item as purchased. Jake won't see this status.`);
+    } catch (error) {
+      console.error('Failed to claim item:', error);
+      alert('Failed to mark item as purchased. Please try again.');
+    }
+  }
+
+  // Unclaim item
+  async function unclaimItem(itemId) {
+    if (!confirm('Remove your claim on this item?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/wishlist/${itemId}/claim?claimed_by=`, {
+        method: 'PATCH'
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to unclaim item');
+      }
+
+      await loadItems();
+      alert('Item unclaimed successfully!');
+    } catch (error) {
+      console.error('Failed to unclaim item:', error);
+      alert('Failed to unclaim item. Please try again.');
+    }
+  }
+
   // Create item element (read-only version)
   function createItemElement(item) {
     const div = document.createElement('div');
-    div.className = `wishlist-item${item.purchased ? ' purchased' : ''}`;
+    // Add 'claimed' class if item is claimed (don't show purchased class to avoid spoiling)
+    const isClaimed = item.claimed_by && item.claimed_by.trim() !== '';
+    div.className = `wishlist-item${isClaimed ? ' claimed' : ''}`;
 
     const imageEl = item.image
       ? `<img src="${item.image}" alt="${item.name}" class="item-image" />`
       : `<div class="item-image placeholder">🎁</div>`;
 
-    const priceEl = item.price
-      ? `<span class="item-price">${item.price}</span>`
+    const storeName = getStoreName(item.url);
+    const storeEl = storeName
+      ? `<span class="store-name">${storeName}</span>`
       : '';
+
+    const priceEl = item.price
+      ? `<span class="item-price">${item.price}${storeEl ? ' ' + storeEl : ''}</span>`
+      : (storeEl ? `<span class="item-price">${storeEl}</span>` : '');
 
     const linkEl = item.url
       ? `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="item-link">View Product →</a>`
@@ -197,7 +324,22 @@ const API_BASE_URL = isLocalDevelopment
         ${linkEl}
         ${notesEl}
       </div>
+      <div class="item-actions">
+        <button class="action-btn claim-btn" data-id="${item.id}">
+          ${isClaimed ? '✓ You Claimed This' : 'Mark as Purchased'}
+        </button>
+      </div>
     `;
+
+    // Add event listener for claim button
+    const claimBtn = div.querySelector('.claim-btn');
+    claimBtn.addEventListener('click', () => {
+      if (isClaimed) {
+        unclaimItem(item.id);
+      } else {
+        claimItem(item.id);
+      }
+    });
 
     return div;
   }
@@ -208,6 +350,13 @@ const API_BASE_URL = isLocalDevelopment
     div.textContent = text;
     return div.innerHTML;
   }
+
+  // Sort dropdown event listener
+  sortSelect.addEventListener('change', (e) => {
+    currentSort = e.target.value;
+    sortItems();
+    renderItems();
+  });
 
   // Initial render
   loadItems();
