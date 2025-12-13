@@ -289,11 +289,13 @@ const API_BASE_URL = isLocalDevelopment
 
       if (isUnclaim) {
         nameInput.parentElement.style.display = 'none';
+        nameInput.removeAttribute('required'); // Remove required when hidden
         passwordGroup.querySelector('label').textContent = 'Enter Password';
         passwordInput.placeholder = 'Enter the password to unclaim';
         submitBtn.textContent = 'Unclaim';
       } else {
         nameInput.parentElement.style.display = 'flex';
+        nameInput.setAttribute('required', 'required'); // Re-add required when visible
         passwordGroup.querySelector('label').textContent = 'Password';
         passwordInput.placeholder = 'Set a password to protect this claim';
         submitBtn.textContent = 'Claim Item';
