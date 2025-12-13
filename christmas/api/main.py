@@ -284,12 +284,9 @@ def fetch_product_image(request: FetchImageRequest):
             img_response.raise_for_status()
 
             # Check if image is a placeholder (1x1 or very small)
-            try:
-                img = Image.open(BytesIO(img_response.content))
-                if img.width <= 1 or img.height <= 1:
-                    raise HTTPException(status_code=404, detail="Found only placeholder image")
-            except:
-                pass
+            img = Image.open(BytesIO(img_response.content))
+            if img.width <= 1 or img.height <= 1:
+                raise HTTPException(status_code=404, detail="Image is a 1x1 placeholder, not a real product image")
 
             # Convert to base64 data URI
             content_type = img_response.headers.get('Content-Type', 'image/jpeg')
