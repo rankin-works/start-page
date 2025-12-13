@@ -105,10 +105,10 @@ def get_item(item_id: int):
         raise HTTPException(status_code=404, detail="Item not found")
     return item
 
-# Protected endpoints (require authentication)
+# Protected endpoints (Cloudflare Zero Trust handles authentication)
 @app.post("/api/wishlist", status_code=status.HTTP_201_CREATED)
-def add_item(item: WishlistItem, username: str = Depends(verify_admin)):
-    """Add a new wishlist item (requires authentication)"""
+def add_item(item: WishlistItem):
+    """Add a new wishlist item (protected by Cloudflare Zero Trust)"""
     items = load_wishlist()
 
     # Generate new ID
@@ -124,8 +124,8 @@ def add_item(item: WishlistItem, username: str = Depends(verify_admin)):
     return item_dict
 
 @app.put("/api/wishlist/{item_id}")
-def update_item(item_id: int, item: WishlistItem, username: str = Depends(verify_admin)):
-    """Update an existing wishlist item (requires authentication)"""
+def update_item(item_id: int, item: WishlistItem):
+    """Update an existing wishlist item (protected by Cloudflare Zero Trust)"""
     items = load_wishlist()
 
     for i, existing_item in enumerate(items):
@@ -140,8 +140,8 @@ def update_item(item_id: int, item: WishlistItem, username: str = Depends(verify
     raise HTTPException(status_code=404, detail="Item not found")
 
 @app.delete("/api/wishlist/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_item(item_id: int, username: str = Depends(verify_admin)):
-    """Delete a wishlist item (requires authentication)"""
+def delete_item(item_id: int):
+    """Delete a wishlist item (protected by Cloudflare Zero Trust)"""
     items = load_wishlist()
 
     items = [item for item in items if item.get("id") != item_id]
@@ -150,14 +150,14 @@ def delete_item(item_id: int, username: str = Depends(verify_admin)):
     return None
 
 @app.delete("/api/wishlist", status_code=status.HTTP_204_NO_CONTENT)
-def clear_wishlist(username: str = Depends(verify_admin)):
-    """Clear all wishlist items (requires authentication)"""
+def clear_wishlist():
+    """Clear all wishlist items (protected by Cloudflare Zero Trust)"""
     save_wishlist([])
     return None
 
 @app.patch("/api/wishlist/{item_id}/toggle-purchased")
-def toggle_purchased(item_id: int, username: str = Depends(verify_admin)):
-    """Toggle purchased status of an item (requires authentication)"""
+def toggle_purchased(item_id: int):
+    """Toggle purchased status of an item (protected by Cloudflare Zero Trust)"""
     items = load_wishlist()
 
     for item in items:
