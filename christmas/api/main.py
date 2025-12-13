@@ -288,14 +288,23 @@ def fetch_product_image(request: FetchImageRequest):
             else:
                 print(f"[IMAGE FETCH] No og:image found")
 
-        # Method 3: Look for largest image on page
+        # Method 3: Look for largest image on page (skip tracking/small images)
         if not image_url:
+            print(f"[IMAGE FETCH] Trying generic img tags")
             images = soup.find_all('img')
             for img in images:
                 src = img.get('src') or img.get('data-src')
                 if src and ('http' in src or src.startswith('//')):
+                    # Skip tracking pixels and sprites
+                    if ('fls-na.amazon.com' in src or 'oc-csi' in src or '/OP/requestId' in src or
+                        '1x1' in src or 'pixel' in src.lower() or 'sprite' in src.lower()):
+                        print(f"[IMAGE FETCH] Skipping tracking/sprite image: {src}")
+                        continue
                     image_url = src
+                    print(f"[IMAGE FETCH] Found image from img tag: {src}")
                     break
+            if not image_url:
+                print(f"[IMAGE FETCH] No valid img tags found")
 
         if not image_url:
             raise HTTPException(status_code=404, detail="Could not find product image")
