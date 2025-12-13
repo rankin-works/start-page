@@ -22,6 +22,32 @@
     .wishlist-stats button {
       display: none;
     }
+
+    /* Snowfall effect */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      z-index: 9999;
+      user-select: none;
+      pointer-events: none;
+      color: white;
+      font-size: 1em;
+      animation: snowfall linear infinite;
+    }
+
+    @keyframes snowfall {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 1;
+      }
+      80% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) translateX(var(--drift));
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 
@@ -126,5 +152,50 @@
   </main>
 
   <script src="christmas-public-api.js?v=__CACHE_BUST__"></script>
+
+  <!-- Snowfall Effect -->
+  <script>
+    (function() {
+      const snowflakeChars = ['❄', '❅', '❆'];
+      const snowflakeCount = 50;
+
+      function createSnowflake() {
+        const snowflake = document.createElement('div');
+        snowflake.classList.add('snowflake');
+        snowflake.textContent = snowflakeChars[Math.floor(Math.random() * snowflakeChars.length)];
+
+        // Random horizontal position
+        snowflake.style.left = Math.random() * 100 + '%';
+
+        // Random size between 0.5em and 1.5em
+        const size = Math.random() * 1 + 0.5;
+        snowflake.style.fontSize = size + 'em';
+
+        // Random animation duration (slower = 10-20 seconds)
+        const duration = Math.random() * 10 + 10;
+        snowflake.style.animationDuration = duration + 's';
+
+        // Random horizontal drift (-50px to 50px)
+        const drift = (Math.random() - 0.5) * 100;
+        snowflake.style.setProperty('--drift', drift + 'px');
+
+        // Random delay to stagger the snowflakes
+        snowflake.style.animationDelay = Math.random() * 5 + 's';
+
+        document.body.appendChild(snowflake);
+
+        // Remove snowflake after animation completes to prevent memory leak
+        setTimeout(() => {
+          snowflake.remove();
+          createSnowflake(); // Create a new one to maintain count
+        }, (duration + 5) * 1000);
+      }
+
+      // Create initial snowflakes
+      for (let i = 0; i < snowflakeCount; i++) {
+        createSnowflake();
+      }
+    })();
+  </script>
 </body>
 </html>
