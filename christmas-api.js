@@ -5,8 +5,9 @@ const API_BASE_URL = window.location.origin.includes('localhost') || window.loca
   ? 'http://10.0.0.13:8000'
   : 'https://home.rankin.works';  // Update this to your actual API URL
 
-const API_USERNAME = 'jake';  // This will be entered by user
-const API_PASSWORD = localStorage.getItem('christmasApiPassword') || '';
+// No authentication needed - protected by Cloudflare Zero Trust
+const API_USERNAME = 'jake';
+const API_PASSWORD = 'not-needed'; // Dummy password since Cloudflare handles auth
 
 // Custom Cursor (from main site)
 (function() {
@@ -120,9 +121,8 @@ async function apiRequest(endpoint, options = {}) {
   const response = await fetch(url, { ...defaultOptions, ...options });
 
   if (response.status === 401) {
-    // Unauthorized - prompt for password
-    promptForPassword();
-    throw new Error('Authentication required');
+    // Shouldn't happen since we're behind Cloudflare Zero Trust
+    throw new Error('API authentication failed');
   }
 
   if (!response.ok) {
@@ -137,13 +137,7 @@ async function apiRequest(endpoint, options = {}) {
   return response.json();
 }
 
-function promptForPassword() {
-  const password = prompt('Please enter your admin password to edit the wishlist:');
-  if (password) {
-    localStorage.setItem('christmasApiPassword', password);
-    location.reload();
-  }
-}
+// Password prompt removed - Cloudflare Zero Trust handles authentication
 
 // Christmas List Functionality with API
 (function() {
