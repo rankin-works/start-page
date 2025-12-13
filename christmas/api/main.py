@@ -197,6 +197,7 @@ def fetch_product_image(request: FetchImageRequest):
     Returns the main product image URL
     """
     url = request.url
+    print(f"[IMAGE FETCH] Attempting to fetch image from: {url}")
     try:
         # Add user agent to avoid being blocked
         headers = {
@@ -215,6 +216,7 @@ def fetch_product_image(request: FetchImageRequest):
         # Check if this is an Amazon URL (including after redirects)
         final_url = response.url
         is_amazon = 'amazon.com' in final_url or 'amazon.' in final_url
+        print(f"[IMAGE FETCH] Final URL after redirect: {final_url}, Is Amazon: {is_amazon}")
 
         # Try multiple methods to find the product image
         # Method 1: Amazon-specific - look for main image
@@ -292,7 +294,10 @@ def fetch_product_image(request: FetchImageRequest):
 
         # Validate that we actually found an image URL
         if not image_url:
+            print(f"[IMAGE FETCH] ERROR: Could not find any image URL on page")
             raise HTTPException(status_code=404, detail="Could not find product image on page")
+
+        print(f"[IMAGE FETCH] Found image URL: {image_url}")
 
         # Download the image and convert to base64 to avoid hotlinking issues
         import base64
@@ -319,8 +324,12 @@ def fetch_product_image(request: FetchImageRequest):
             raise HTTPException(status_code=404, detail=f"Could not download valid product image: {str(download_error)}")
 
     except requests.exceptions.RequestException as e:
+        print(f"[IMAGE FETCH] Request error: {str(e)}")
         raise HTTPException(status_code=400, detail=f"Failed to fetch URL: {str(e)}")
     except Exception as e:
+        print(f"[IMAGE FETCH] General error: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
 
 if __name__ == "__main__":
