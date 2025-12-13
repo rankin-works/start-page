@@ -174,6 +174,59 @@
     </div>
   </main>
 
+  <!-- Edit Item Modal -->
+  <div id="edit-modal" class="modal-backdrop">
+    <div class="modal-content" style="max-width: 600px;">
+      <h2 class="modal-title">Edit Item</h2>
+      <form id="edit-item-form" class="add-item-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-item-name">Item Name *</label>
+            <input type="text" id="edit-item-name" required placeholder="e.g., Mechanical Keyboard" />
+          </div>
+          <div class="form-group">
+            <label for="edit-item-price">Price</label>
+            <input type="text" id="edit-item-price" placeholder="$99.99" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-item-url">Product URL</label>
+            <input type="url" id="edit-item-url" placeholder="https://amazon.com/..." />
+            <small>Paste Amazon, eBay, or other product link</small>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-item-priority">Priority</label>
+            <select id="edit-item-priority">
+              <option value="nice">Nice to Have</option>
+              <option value="want">Really Want</option>
+              <option value="must">Must Have!</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="edit-item-image">Image</label>
+            <input type="file" id="edit-item-image" accept="image/*" />
+            <small>Upload a new image (optional)</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-item-notes">Notes (optional)</label>
+          <textarea id="edit-item-notes" rows="2" placeholder="Size, color preference, etc."></textarea>
+        </div>
+
+        <div class="modal-buttons" style="margin-top: 16px;">
+          <button type="button" class="modal-btn modal-btn-secondary" id="edit-cancel">Cancel</button>
+          <button type="submit" class="modal-btn modal-btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="christmas-api.js?v=__CACHE_BUST__"></script>
 </body>
 </html>

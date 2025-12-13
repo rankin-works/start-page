@@ -365,14 +365,20 @@ async function apiRequest(endpoint, options = {}) {
         ${notesEl}
       </div>
       <div class="item-actions">
+        <button class="action-btn edit-btn" data-id="${item.id}">
+          Edit
+        </button>
         <button class="action-btn delete-btn" data-id="${item.id}">
           Delete
         </button>
       </div>
     `;
 
-    // Add event listener
+    // Add event listeners
+    const editBtn = div.querySelector('.edit-btn');
     const deleteBtn = div.querySelector('.delete-btn');
+
+    editBtn.addEventListener('click', () => openEditModal(item));
     deleteBtn.addEventListener('click', () => deleteItem(item.id));
 
     return div;
@@ -432,6 +438,100 @@ async function apiRequest(endpoint, options = {}) {
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
+  }
+
+  // Open edit modal with item data
+  function openEditModal(item) {
+    const modal = document.getElementById('edit-modal');
+    const form = document.getElementById('edit-item-form');
+    const cancelBtn = document.getElementById('edit-cancel');
+
+    // Pre-fill form with item data
+    document.getElementById('edit-item-name').value = item.name;
+    document.getElementById('edit-item-price').value = item.price || '';
+    document.getElementById('edit-item-url').value = item.url || '';
+    document.getElementById('edit-item-priority').value = item.priority;
+    document.getElementById('edit-item-notes').value = item.notes || '';
+
+    // Show modal
+    modal.classList.add('active');
+
+    // Handle form submission
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('edit-item-name').value.trim();
+      const price = document.getElementById('edit-item-price').value.trim();
+      const url = document.getElementById('edit-item-url').value.trim();
+      const priority = document.getElementById('edit-item-priority').value;
+      const notes = document.getElementById('edit-item-notes').value.trim();
+      const imageFile = document.getElementById('edit-item-image').files[0];
+
+      let imageData = item.image; // Keep existing image by default
+
+      // Only update image if new one is uploaded
+      if (imageFile) {
+        imageData = await fileToBase64(imageFile);
+      }
+
+      const updatedItem = {
+        id: item.id,
+        name,
+        price,
+        url,
+        priority,
+        notes,
+        image: imageData,
+        purchased: item.purchased,
+        claimed_by: item.claimed_by,
+        claim_password: item.claim_password,
+        created_at: item.created_at
+      };
+
+      try {
+        await apiRequest(`/api/wishlist/${item.id}`, {
+          method: 'PUT',
+          body: JSON.stringify(updatedItem)
+        });
+
+        modal.classList.remove('active');
+        form.removeEventListener('submit', handleSubmit);
+        cancelBtn.removeEventListener('click', handleCancel);
+        await loadItems();
+        showSuccess('Item updated successfully!');
+      } catch (error) {
+        console.error('Failed to update item:', error);
+        showError('Failed to update item. Please try again.');
+      }
+    };
+
+    // Handle cancel
+    const handleCancel = () => {
+      modal.classList.remove('active');
+      form.removeEventListener('submit', handleSubmit);
+      cancelBtn.removeEventListener('click', handleCancel);
+      form.reset();
+    };
+
+    // Handle backdrop click
+    const handleBackdropClick = (e) => {
+      if (e.target === modal) {
+        handleCancel();
+      }
+    };
+
+    // Handle escape key
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        handleCancel();
+        document.removeEventListener('keydown', handleEscape);
+      }
+    };
+
+    form.addEventListener('submit', handleSubmit);
+    cancelBtn.addEventListener('click', handleCancel);
+    modal.addEventListener('click', handleBackdropClick);
+    document.addEventListener('keydown', handleEscape);
   }
 
   // Delete item
