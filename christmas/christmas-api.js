@@ -454,7 +454,8 @@ async function apiRequest(endpoint, options = {}) {
     document.getElementById('edit-item-notes').value = item.notes || '';
 
     // Show modal
-    modal.classList.add('active');
+    modal.style.display = 'flex';
+    setTimeout(() => modal.classList.add('active'), 10);
 
     // Handle form submission
     const handleSubmit = async (e) => {
@@ -495,6 +496,7 @@ async function apiRequest(endpoint, options = {}) {
         });
 
         modal.classList.remove('active');
+        setTimeout(() => modal.style.display = 'none', 300);
         form.removeEventListener('submit', handleSubmit);
         cancelBtn.removeEventListener('click', handleCancel);
         await loadItems();
@@ -508,6 +510,7 @@ async function apiRequest(endpoint, options = {}) {
     // Handle cancel
     const handleCancel = () => {
       modal.classList.remove('active');
+      setTimeout(() => modal.style.display = 'none', 300);
       form.removeEventListener('submit', handleSubmit);
       cancelBtn.removeEventListener('click', handleCancel);
       form.reset();
