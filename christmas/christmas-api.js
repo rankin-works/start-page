@@ -365,20 +365,14 @@ async function apiRequest(endpoint, options = {}) {
         ${notesEl}
       </div>
       <div class="item-actions">
-        <button class="action-btn purchased-btn" data-id="${item.id}">
-          ${item.purchased ? '✓ Purchased' : 'Mark Purchased'}
-        </button>
         <button class="action-btn delete-btn" data-id="${item.id}">
           Delete
         </button>
       </div>
     `;
 
-    // Add event listeners
-    const purchasedBtn = div.querySelector('.purchased-btn');
+    // Add event listener
     const deleteBtn = div.querySelector('.delete-btn');
-
-    purchasedBtn.addEventListener('click', () => togglePurchased(item.id));
     deleteBtn.addEventListener('click', () => deleteItem(item.id));
 
     return div;
@@ -438,19 +432,6 @@ async function apiRequest(endpoint, options = {}) {
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
-  }
-
-  // Toggle purchased status
-  async function togglePurchased(itemId) {
-    try {
-      await apiRequest(`/api/wishlist/${itemId}/toggle-purchased`, {
-        method: 'PATCH'
-      });
-      await loadItems();
-    } catch (error) {
-      console.error('Failed to toggle purchased:', error);
-      showError('Failed to update item. Please try again.');
-    }
   }
 
   // Delete item
