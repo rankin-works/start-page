@@ -120,6 +120,13 @@ const API_BASE_URL = isLocalDevelopment
 
   let wishlistItems = [];
   let currentSort = 'default'; // Track current sort method
+  let showClaims = localStorage.getItem('showClaimsMode') === 'true'; // Track whether to show claim information
+
+  // Listen for toggle claims event
+  window.addEventListener('toggleClaims', (e) => {
+    showClaims = e.detail.showClaims;
+    renderItems(); // Re-render to show/hide claims
+  });
 
   // Load items from API
   async function loadItems() {
@@ -307,6 +314,11 @@ const API_BASE_URL = isLocalDevelopment
       ? `<p class="item-notes">${escapeHtml(item.notes)}</p>`
       : '';
 
+    // Show who claimed the item if showClaims is enabled
+    const claimedByEl = showClaims && isClaimed
+      ? `<p class="claimed-by-info">🎁 Claimed by: ${escapeHtml(item.claimed_by)}</p>`
+      : '';
+
     const priorityLabels = {
       nice: 'Nice to Have',
       want: 'Really Want',
@@ -323,10 +335,11 @@ const API_BASE_URL = isLocalDevelopment
         </div>
         ${linkEl}
         ${notesEl}
+        ${claimedByEl}
       </div>
       <div class="item-actions">
         <button class="action-btn claim-btn" data-id="${item.id}">
-          ${isClaimed ? '✓ You Claimed This' : 'Mark as Purchased'}
+          ${isClaimed ? '✓ Claimed' : 'Mark as Purchased'}
         </button>
       </div>
     `;
@@ -363,4 +376,31 @@ const API_BASE_URL = isLocalDevelopment
 
   // Auto-refresh every 10 seconds to see updates
   setInterval(loadItems, 10000);
+})();
+
+// Show Claims Toggle (outside the wishlist IIFE to access global scope)
+(function() {
+  const showClaimsToggle = document.getElementById('show-claims-toggle');
+  const claimsStatus = document.getElementById('claims-status');
+
+  // Check localStorage for saved preference
+  let claimsVisible = localStorage.getItem('showClaimsMode') === 'true';
+
+  if (claimsVisible) {
+    claimsStatus.textContent = '🙈 Hide Claims';
+  }
+
+  showClaimsToggle.addEventListener('click', () => {
+    claimsVisible = !claimsVisible;
+    localStorage.setItem('showClaimsMode', claimsVisible);
+
+    if (claimsVisible) {
+      claimsStatus.textContent = '🙈 Hide Claims';
+    } else {
+      claimsStatus.textContent = '👁️ Show Claims';
+    }
+
+    // Trigger re-render by dispatching custom event
+    window.dispatchEvent(new CustomEvent('toggleClaims', { detail: { showClaims: claimsVisible } }));
+  });
 })();
