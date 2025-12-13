@@ -160,6 +160,59 @@ async function apiRequest(endpoint, options = {}) {
   const imageInput = document.getElementById('item-image');
   let fetchTimeout = null;
 
+  // Fetch image with retry logic
+  async function fetchImageWithRetry(url, maxRetries = 3) {
+    const imageLabel = document.querySelector('label[for="item-image"]');
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        if (imageLabel) {
+          if (attempt === 1) {
+            imageLabel.textContent = 'Image (fetching...)';
+          } else {
+            imageLabel.textContent = `Image (retrying ${attempt}/${maxRetries}...)`;
+          }
+        }
+
+        const response = await apiRequest('/api/fetch-product-image', {
+          method: 'POST',
+          body: JSON.stringify({ url })
+        });
+
+        if (response && response.image_url) {
+          fetchedImageUrl = response.image_url;
+          console.log('Auto-fetched product image:', fetchedImageUrl);
+
+          // Show success
+          if (imageLabel) {
+            imageLabel.textContent = 'Image (auto-fetched from URL ✓)';
+            setTimeout(() => {
+              imageLabel.textContent = 'Image';
+            }, 3000);
+          }
+          return; // Success - exit retry loop
+        }
+      } catch (error) {
+        console.log(`Fetch attempt ${attempt} failed:`, error);
+
+        // If not the last attempt, wait before retrying
+        if (attempt < maxRetries) {
+          const delay = attempt * 1000; // 1s, 2s, 3s backoff
+          await new Promise(resolve => setTimeout(resolve, delay));
+        } else {
+          // All retries failed
+          fetchedImageUrl = null;
+          if (imageLabel) {
+            imageLabel.textContent = 'Image (auto-fetch failed - upload manually)';
+            setTimeout(() => {
+              imageLabel.textContent = 'Image';
+            }, 4000);
+          }
+        }
+      }
+    }
+  }
+
   urlInput.addEventListener('input', async () => {
     // Clear previous timeout
     if (fetchTimeout) clearTimeout(fetchTimeout);
@@ -169,39 +222,8 @@ async function apiRequest(endpoint, options = {}) {
     // Only auto-fetch for URLs that look like product pages
     if (url && (url.includes('amazon.com') || url.includes('amzn') || url.includes('a.co'))) {
       // Debounce - wait 1 second after user stops typing
-      fetchTimeout = setTimeout(async () => {
-        try {
-          const response = await apiRequest('/api/fetch-product-image', {
-            method: 'POST',
-            body: JSON.stringify({ url })
-          });
-
-          if (response && response.image_url) {
-            fetchedImageUrl = response.image_url;
-            console.log('Auto-fetched product image:', fetchedImageUrl);
-
-            // Show a subtle indicator that image was fetched
-            const imageLabel = document.querySelector('label[for="item-image"]');
-            if (imageLabel) {
-              imageLabel.textContent = 'Image (auto-fetched from URL ✓)';
-              setTimeout(() => {
-                imageLabel.textContent = 'Image';
-              }, 3000);
-            }
-          }
-        } catch (error) {
-          console.log('Could not auto-fetch image:', error);
-          fetchedImageUrl = null;
-
-          // Show a helpful message
-          const imageLabel = document.querySelector('label[for="item-image"]');
-          if (imageLabel) {
-            imageLabel.textContent = 'Image (auto-fetch unavailable - upload manually)';
-            setTimeout(() => {
-              imageLabel.textContent = 'Image';
-            }, 4000);
-          }
-        }
+      fetchTimeout = setTimeout(() => {
+        fetchImageWithRetry(url);
       }, 1000);
     } else {
       fetchedImageUrl = null;
