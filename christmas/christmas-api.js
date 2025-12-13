@@ -454,8 +454,7 @@ async function apiRequest(endpoint, options = {}) {
     document.getElementById('edit-item-notes').value = item.notes || '';
 
     // Show modal
-    modal.style.display = 'flex';
-    setTimeout(() => modal.classList.add('active'), 10);
+    modal.classList.add('active');
 
     // Handle form submission
     const handleSubmit = async (e) => {
@@ -496,9 +495,9 @@ async function apiRequest(endpoint, options = {}) {
         });
 
         modal.classList.remove('active');
-        setTimeout(() => modal.style.display = 'none', 300);
         form.removeEventListener('submit', handleSubmit);
         cancelBtn.removeEventListener('click', handleCancel);
+        modal.removeEventListener('click', handleBackdropClick);
         await loadItems();
         showSuccess('Item updated successfully!');
       } catch (error) {
@@ -510,9 +509,9 @@ async function apiRequest(endpoint, options = {}) {
     // Handle cancel
     const handleCancel = () => {
       modal.classList.remove('active');
-      setTimeout(() => modal.style.display = 'none', 300);
       form.removeEventListener('submit', handleSubmit);
       cancelBtn.removeEventListener('click', handleCancel);
+      modal.removeEventListener('click', handleBackdropClick);
       form.reset();
     };
 
