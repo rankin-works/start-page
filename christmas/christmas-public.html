@@ -228,11 +228,11 @@
       <form class="modal-form" id="claim-form">
         <div class="modal-form-group">
           <label for="modal-name">Your Name</label>
-          <input type="text" id="modal-name" placeholder="e.g., Mom" required />
+          <input type="text" id="modal-name" placeholder="e.g., Mom" required autocomplete="off" />
         </div>
         <div class="modal-form-group" id="password-group">
           <label for="modal-password">Password</label>
-          <input type="password" id="modal-password" placeholder="Set a password to protect this claim" required />
+          <input type="password" id="modal-password" placeholder="Set a password to protect this claim" required autocomplete="off" data-lpignore="true" data-form-type="other" />
         </div>
         <div class="modal-buttons">
           <button type="button" class="modal-btn modal-btn-secondary" id="modal-cancel">Cancel</button>
