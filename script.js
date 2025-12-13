@@ -179,13 +179,21 @@
   const themeLabel = themeToggle.querySelector('.theme-label');
   const htmlElement = document.documentElement;
 
-  // Get saved theme or default to dark
-  const savedTheme = localStorage.getItem('theme') || 'dark';
+  // Check if user has a saved preference, otherwise use system preference
+  let savedTheme = localStorage.getItem('theme');
 
-  // Apply saved theme on load
+  if (!savedTheme) {
+    // Detect system preference
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    savedTheme = prefersDark ? 'dark' : 'light';
+  }
+
+  // Apply theme on load
   if (savedTheme === 'light') {
     htmlElement.setAttribute('data-theme', 'light');
     themeLabel.textContent = 'Light Mode';
+  } else {
+    themeLabel.textContent = 'Dark Mode';
   }
 
   // Toggle theme on click

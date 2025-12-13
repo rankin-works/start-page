@@ -79,11 +79,20 @@ const API_BASE_URL = isLocalDevelopment
   const themeLabel = themeToggle.querySelector('.theme-label');
   const htmlElement = document.documentElement;
 
-  const savedTheme = localStorage.getItem('theme') || 'dark';
+  // Check if user has a saved preference, otherwise use system preference
+  let savedTheme = localStorage.getItem('theme');
+
+  if (!savedTheme) {
+    // Detect system preference
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    savedTheme = prefersDark ? 'dark' : 'light';
+  }
 
   if (savedTheme === 'light') {
     htmlElement.setAttribute('data-theme', 'light');
     themeLabel.textContent = 'Light Mode';
+  } else {
+    themeLabel.textContent = 'Dark Mode';
   }
 
   themeToggle.addEventListener('click', () => {
