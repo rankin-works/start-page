@@ -304,17 +304,34 @@ const API_BASE_URL = isLocalDevelopment
 
       // Show modal
       modal.classList.add('active');
-      nameInput.focus();
+
+      // Focus correct input
+      if (isUnclaim) {
+        passwordInput.focus();
+      } else {
+        nameInput.focus();
+      }
 
       // Handle form submission
       const handleSubmit = (e) => {
         e.preventDefault();
-        const name = nameInput.value.trim();
+        const name = isUnclaim ? '' : nameInput.value.trim();
         const password = passwordInput.value.trim();
+
+        // Validate
+        if (!isUnclaim && !name) {
+          nameInput.focus();
+          return;
+        }
+        if (!password) {
+          passwordInput.focus();
+          return;
+        }
 
         modal.classList.remove('active');
         form.removeEventListener('submit', handleSubmit);
         cancelBtn.removeEventListener('click', handleCancel);
+        modal.removeEventListener('click', handleBackdropClick);
 
         resolve({ name, password });
       };
