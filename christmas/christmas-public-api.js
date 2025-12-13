@@ -263,9 +263,20 @@ const API_BASE_URL = isLocalDevelopment
     }
   }
 
-  // Unclaim item
-  async function unclaimItem(itemId) {
-    if (!confirm('Remove your claim on this item?')) {
+  // Unclaim item (requires name verification)
+  async function unclaimItem(itemId, claimedBy) {
+    const userName = prompt(`This item was claimed by "${claimedBy}".\n\nEnter your name to remove the claim:`);
+    if (!userName || userName.trim() === '') {
+      return; // User cancelled
+    }
+
+    // Check if the name matches (case-insensitive)
+    if (userName.trim().toLowerCase() !== claimedBy.toLowerCase()) {
+      alert(`Sorry, only "${claimedBy}" can remove this claim.\n\nIf you need to unclaim this item, please ask them or contact Jake to remove it manually.`);
+      return;
+    }
+
+    if (!confirm('Are you sure you want to remove your claim on this item?')) {
       return;
     }
 
@@ -348,7 +359,7 @@ const API_BASE_URL = isLocalDevelopment
     const claimBtn = div.querySelector('.claim-btn');
     claimBtn.addEventListener('click', () => {
       if (isClaimed) {
-        unclaimItem(item.id);
+        unclaimItem(item.id, item.claimed_by);
       } else {
         claimItem(item.id);
       }
