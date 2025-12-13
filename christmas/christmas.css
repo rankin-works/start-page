@@ -48,7 +48,7 @@ body {
   border: 1px solid var(--card-border);
   border-radius: 16px;
   padding: 24px;
-  margin-bottom: 32px;
+  margin-bottom: 40px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -124,6 +124,34 @@ body {
 .form-group textarea {
   resize: vertical;
   min-height: 60px;
+}
+
+/* Style file input */
+.form-group input[type="file"] {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.form-group input[type="file"]::file-selector-button {
+  padding: 8px 16px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-right: 12px;
+  transition: all 0.3s ease;
+}
+
+.form-group input[type="file"]::file-selector-button:hover {
+  background: #3aa8ac;
+  transform: translateY(-1px);
+}
+
+[data-theme="light"] .form-group input[type="file"]::file-selector-button {
+  background: var(--accent);
+  color: white;
 }
 
 /* Buttons */
@@ -454,6 +482,24 @@ body {
 
   .shell {
     padding: 12px !important;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .add-item-card {
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .wishlist-container {
+    padding: 16px;
+    margin: 0;
   }
 
   .wishlist-header {
