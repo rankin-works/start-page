@@ -3,7 +3,7 @@
 // Configuration
 const API_BASE_URL = window.location.origin.includes('localhost') || window.location.origin.includes('5503')
   ? 'http://10.0.0.13:8000'
-  : 'https://home.rankin.works';  // Update this to your actual API URL
+  : window.location.origin + '/christmas';  // API is proxied at /christmas/api/*
 
 // Custom Cursor (from main site)
 (function() {
