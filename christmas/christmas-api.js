@@ -307,33 +307,15 @@ async function apiRequest(endpoint, options = {}) {
     });
   }
 
-  // Extract store name from URL
-  function getStoreName(url) {
+  // Get favicon URL from domain
+  function getFaviconUrl(url) {
     if (!url) return null;
 
     try {
-      const hostname = new URL(url).hostname.toLowerCase();
-
-      // Map common domains to store names
-      if (hostname.includes('amazon.com') || hostname.includes('amzn') || hostname.includes('a.co')) {
-        return 'Amazon';
-      } else if (hostname.includes('target.com')) {
-        return 'Target';
-      } else if (hostname.includes('ebay.com')) {
-        return 'eBay';
-      } else if (hostname.includes('walmart.com')) {
-        return 'Walmart';
-      } else if (hostname.includes('bestbuy.com')) {
-        return 'Best Buy';
-      } else if (hostname.includes('etsy.com')) {
-        return 'Etsy';
-      } else if (hostname.includes('newegg.com')) {
-        return 'Newegg';
-      } else {
-        // Generic - extract domain name
-        const parts = hostname.replace('www.', '').split('.');
-        return parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
-      }
+      const urlObj = new URL(url);
+      const domain = urlObj.hostname;
+      // Use Google's favicon service
+      return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
     } catch (e) {
       return null;
     }
@@ -348,14 +330,14 @@ async function apiRequest(endpoint, options = {}) {
       ? `<img src="${item.image}" alt="${item.name}" class="item-image" />`
       : `<div class="item-image placeholder">🎁</div>`;
 
-    const storeName = getStoreName(item.url);
-    const storeEl = storeName
-      ? `<span class="store-name">${storeName}</span>`
+    const faviconUrl = getFaviconUrl(item.url);
+    const faviconEl = faviconUrl
+      ? `<img src="${faviconUrl}" alt="Store favicon" class="store-favicon" />`
       : '';
 
     const priceEl = item.price
-      ? `<span class="item-price">${item.price}${storeEl ? ' ' + storeEl : ''}</span>`
-      : (storeEl ? `<span class="item-price">${storeEl}</span>` : '');
+      ? `<span class="item-price">${item.price}${faviconEl ? ' ' + faviconEl : ''}</span>`
+      : (faviconEl ? `<span class="item-price">${faviconEl}</span>` : '');
 
     const linkEl = item.url
       ? `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="item-link">View Product →</a>`
