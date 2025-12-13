@@ -187,12 +187,16 @@ def claim_item(item_id: int, claimed_by: str):
 
     raise HTTPException(status_code=404, detail="Item not found")
 
+class FetchImageRequest(BaseModel):
+    url: str
+
 @app.post("/api/fetch-product-image")
-def fetch_product_image(url: str):
+def fetch_product_image(request: FetchImageRequest):
     """
     Fetch product image from a URL (primarily Amazon)
     Returns the main product image URL
     """
+    url = request.url
     try:
         # Add user agent to avoid being blocked
         headers = {
