@@ -19,6 +19,74 @@
   display: flex;
 }
 
+.modal-content {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 24px;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: none;
+  transition: all 0.3s ease;
+}
+
+.modal-btn-primary {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 4px 12px rgba(70, 188, 192, 0.3);
+}
+
+.modal-btn-primary:hover {
+  background: #3aa8ac;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(70, 188, 192, 0.4);
+}
+
+.modal-btn-secondary {
+  background: rgba(148, 163, 184, 0.2);
+  color: var(--text-main);
+  border: 1px solid var(--card-border);
+}
+
+.modal-btn-secondary:hover {
+  background: rgba(148, 163, 184, 0.3);
+  border-color: var(--accent);
+}
+
 /* Override body centering for Christmas pages */
 body {
   align-items: flex-start !important;
