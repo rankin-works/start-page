@@ -175,6 +175,29 @@ body {
   transition: all 0.3s ease;
 }
 
+/* Menu Backdrop */
+.menu-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.menu-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+[data-theme="light"] .menu-backdrop {
+  background: rgba(0, 0, 0, 0.3);
+}
+
 /* Menu Overlay */
 .menu-overlay {
   position: fixed;
@@ -190,7 +213,7 @@ body {
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
 }
 
-.menu-overlay.active {
+.menu-backdrop.active .menu-overlay {
   right: 0;
 }
 

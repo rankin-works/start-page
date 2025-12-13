@@ -135,30 +135,31 @@
 // Hamburger Menu Toggle
 (function() {
   const menuToggle = document.getElementById('menu-toggle');
+  const menuBackdrop = document.getElementById('menu-backdrop');
   const menuOverlay = document.getElementById('menu-overlay');
   const menuClose = document.getElementById('menu-close');
 
   // Open menu
   menuToggle.addEventListener('click', () => {
-    menuOverlay.classList.add('active');
+    menuBackdrop.classList.add('active');
   });
 
   // Close menu
   menuClose.addEventListener('click', () => {
-    menuOverlay.classList.remove('active');
+    menuBackdrop.classList.remove('active');
   });
 
-  // Close menu when clicking outside
-  menuOverlay.addEventListener('click', (e) => {
-    if (e.target === menuOverlay) {
-      menuOverlay.classList.remove('active');
+  // Close menu when clicking on backdrop (outside menu)
+  menuBackdrop.addEventListener('click', (e) => {
+    if (e.target === menuBackdrop) {
+      menuBackdrop.classList.remove('active');
     }
   });
 
   // Close menu on escape key
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menuOverlay.classList.contains('active')) {
-      menuOverlay.classList.remove('active');
+    if (e.key === 'Escape' && menuBackdrop.classList.contains('active')) {
+      menuBackdrop.classList.remove('active');
     }
   });
 
