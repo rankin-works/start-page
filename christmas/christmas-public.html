@@ -16,7 +16,6 @@
     .add-item-card {
       display: none;
     }
-    /* Keep item-actions visible for claim button */
     .wishlist-stats button {
       display: none;
     }
@@ -26,6 +25,20 @@
     }
     .wishlist-item.claimed::after {
       display: none !important;
+    }
+    /* Hide claim buttons and claimed styling by default */
+    .item-actions {
+      display: none;
+    }
+    .wishlist-item.claimed {
+      opacity: 1; /* Don't dim claimed items by default */
+    }
+    /* Show claim buttons and styling only when claims are visible */
+    body.show-claims-mode .item-actions {
+      display: flex;
+    }
+    body.show-claims-mode .wishlist-item.claimed {
+      opacity: 0.8;
     }
 
     /* Snowfall effect */

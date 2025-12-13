@@ -238,9 +238,9 @@ const API_BASE_URL = isLocalDevelopment
     }
   }
 
-  // Claim item (mark as purchased without spoiling the surprise)
+  // Claim item (mark as claimed without spoiling the surprise)
   async function claimItem(itemId) {
-    const giverName = prompt('Enter your name (so Jake knows who got this gift):');
+    const giverName = prompt('Enter your name (so Jake knows who is getting this gift):');
     if (!giverName || giverName.trim() === '') {
       return; // User cancelled
     }
@@ -256,10 +256,10 @@ const API_BASE_URL = isLocalDevelopment
 
       await loadItems();
       // Show success message
-      alert(`Great! You've marked this item as purchased. Jake won't see this status.`);
+      alert(`Great! You've claimed this item. Jake won't see who claimed it unless he peeks!`);
     } catch (error) {
       console.error('Failed to claim item:', error);
-      alert('Failed to mark item as purchased. Please try again.');
+      alert('Failed to claim item. Please try again.');
     }
   }
 
@@ -339,7 +339,7 @@ const API_BASE_URL = isLocalDevelopment
       </div>
       <div class="item-actions">
         <button class="action-btn claim-btn" data-id="${item.id}">
-          ${isClaimed ? '✓ Claimed' : 'Mark as Purchased'}
+          ${isClaimed ? '✓ Claimed' : 'Mark as Claimed'}
         </button>
       </div>
     `;
@@ -386,8 +386,10 @@ const API_BASE_URL = isLocalDevelopment
   // Check localStorage for saved preference
   let claimsVisible = localStorage.getItem('showClaimsMode') === 'true';
 
+  // Apply initial state
   if (claimsVisible) {
     claimsStatus.textContent = '🙈 Hide Claims';
+    document.body.classList.add('show-claims-mode');
   }
 
   showClaimsToggle.addEventListener('click', () => {
@@ -396,8 +398,10 @@ const API_BASE_URL = isLocalDevelopment
 
     if (claimsVisible) {
       claimsStatus.textContent = '🙈 Hide Claims';
+      document.body.classList.add('show-claims-mode');
     } else {
       claimsStatus.textContent = '👁️ Show Claims';
+      document.body.classList.remove('show-claims-mode');
     }
 
     // Trigger re-render by dispatching custom event
