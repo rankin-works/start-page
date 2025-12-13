@@ -377,8 +377,8 @@ async function apiRequest(endpoint, options = {}) {
         <div class="item-header">
           <h3 class="item-name">${escapeHtml(item.name)}</h3>
           ${priceEl}
-          <span class="priority-badge priority-${item.priority}">${priorityLabels[item.priority]}</span>
         </div>
+        <span class="priority-badge priority-${item.priority}">${priorityLabels[item.priority]}</span>
         ${linkEl}
         ${notesEl}
       </div>

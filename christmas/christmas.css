@@ -372,6 +372,8 @@ body {
   font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
+  display: inline-block;
+  margin-bottom: 4px;
 }
 
 .priority-nice {
