@@ -48,6 +48,7 @@ class WishlistItem(BaseModel):
     image: Optional[str] = None  # base64 encoded image
     purchased: bool = False
     claimed_by: Optional[str] = None  # Person who claimed the item
+    claim_password: Optional[str] = None  # Password hash for unclaiming
     created_at: Optional[str] = None
 
 class WishlistResponse(BaseModel):
@@ -172,18 +173,38 @@ def toggle_purchased(item_id: int):
     raise HTTPException(status_code=404, detail="Item not found")
 
 @app.patch("/api/wishlist/{item_id}/claim")
-def claim_item(item_id: int, claimed_by: str):
+def claim_item(item_id: int, claimed_by: str, password: Optional[str] = None):
     """
     Claim an item (public endpoint - for gift givers to mark what they're buying)
     This marks the item as claimed but doesn't show it as purchased to the owner
+    Requires a password to unclaim later
     """
     items = load_wishlist()
 
     for item in items:
         if item.get("id") == item_id:
-            item["claimed_by"] = claimed_by if claimed_by else None
+            if claimed_by:
+                # Claiming - store password hash
+                if password:
+                    import hashlib
+                    password_hash = hashlib.sha256(password.encode()).hexdigest()
+                    item["claim_password"] = password_hash
+                else:
+                    item["claim_password"] = None
+                item["claimed_by"] = claimed_by
+            else:
+                # Unclaiming - verify password
+                if item.get("claim_password") and password:
+                    import hashlib
+                    password_hash = hashlib.sha256(password.encode()).hexdigest()
+                    if password_hash != item.get("claim_password"):
+                        raise HTTPException(status_code=403, detail="Incorrect password")
+
+                item["claimed_by"] = None
+                item["claim_password"] = None
+
             save_wishlist(items)
-            return {"message": "Item claimed successfully", "claimed_by": claimed_by}
+            return {"message": "Item claimed successfully" if claimed_by else "Item unclaimed successfully"}
 
     raise HTTPException(status_code=404, detail="Item not found")
 

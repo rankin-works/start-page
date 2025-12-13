@@ -245,8 +245,14 @@ const API_BASE_URL = isLocalDevelopment
       return; // User cancelled
     }
 
+    const password = prompt('Set a password to protect this claim:\n(You\'ll need this password to unclaim the item later)');
+    if (!password || password.trim() === '') {
+      alert('Password is required to claim an item.');
+      return;
+    }
+
     try {
-      const response = await fetch(`${API_BASE_URL}/api/wishlist/${itemId}/claim?claimed_by=${encodeURIComponent(giverName.trim())}`, {
+      const response = await fetch(`${API_BASE_URL}/api/wishlist/${itemId}/claim?claimed_by=${encodeURIComponent(giverName.trim())}&password=${encodeURIComponent(password)}`, {
         method: 'PATCH'
       });
 
@@ -256,37 +262,32 @@ const API_BASE_URL = isLocalDevelopment
 
       await loadItems();
       // Show success message
-      alert(`Great! You've claimed this item. Jake won't see who claimed it unless he peeks!`);
+      alert(`Great! You've claimed this item. Jake won't see who claimed it unless he peeks!\n\nRemember your password: you'll need it to unclaim this item.`);
     } catch (error) {
       console.error('Failed to claim item:', error);
       alert('Failed to claim item. Please try again.');
     }
   }
 
-  // Unclaim item (requires name verification)
+  // Unclaim item (requires password verification)
   async function unclaimItem(itemId, claimedBy) {
-    const userName = prompt(`This item was claimed by "${claimedBy}".\n\nEnter your name to remove the claim:`);
-    if (!userName || userName.trim() === '') {
+    const password = prompt(`This item was claimed by "${claimedBy}".\n\nEnter the password to remove the claim:`);
+    if (!password || password.trim() === '') {
       return; // User cancelled
     }
 
-    // Check if the name matches (case-insensitive)
-    if (userName.trim().toLowerCase() !== claimedBy.toLowerCase()) {
-      alert(`Sorry, only "${claimedBy}" can remove this claim.\n\nIf you need to unclaim this item, please ask them or contact Jake to remove it manually.`);
-      return;
-    }
-
-    if (!confirm('Are you sure you want to remove your claim on this item?')) {
-      return;
-    }
-
     try {
-      const response = await fetch(`${API_BASE_URL}/api/wishlist/${itemId}/claim?claimed_by=`, {
+      const response = await fetch(`${API_BASE_URL}/api/wishlist/${itemId}/claim?claimed_by=&password=${encodeURIComponent(password)}`, {
         method: 'PATCH'
       });
 
       if (!response.ok) {
-        throw new Error('Failed to unclaim item');
+        if (response.status === 403) {
+          alert('Incorrect password. Only the person who claimed this item can unclaim it.\n\nIf you forgot the password, please contact Jake to remove it manually.');
+        } else {
+          throw new Error('Failed to unclaim item');
+        }
+        return;
       }
 
       await loadItems();
