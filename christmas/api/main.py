@@ -199,8 +199,8 @@ def fetch_product_image(url: str):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
 
-        # Fetch the page
-        response = requests.get(url, headers=headers, timeout=10)
+        # Fetch the page (allow redirects for short URLs like a.co)
+        response = requests.get(url, headers=headers, timeout=10, allow_redirects=True)
         response.raise_for_status()
 
         # Parse HTML
@@ -208,9 +208,13 @@ def fetch_product_image(url: str):
 
         image_url = None
 
+        # Check if this is an Amazon URL (including after redirects)
+        final_url = response.url
+        is_amazon = 'amazon.com' in final_url or 'amazon.' in final_url
+
         # Try multiple methods to find the product image
         # Method 1: Amazon-specific - look for main image
-        if 'amazon.com' in url:
+        if is_amazon:
             # Try to find the main product image
             img_tag = soup.find('img', {'id': 'landingImage'}) or \
                      soup.find('img', {'data-old-hires': True}) or \

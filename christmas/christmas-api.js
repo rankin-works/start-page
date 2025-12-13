@@ -167,7 +167,7 @@ async function apiRequest(endpoint, options = {}) {
     const url = urlInput.value.trim();
 
     // Only auto-fetch for URLs that look like product pages
-    if (url && (url.includes('amazon.com') || url.includes('amzn'))) {
+    if (url && (url.includes('amazon.com') || url.includes('amzn') || url.includes('a.co'))) {
       // Debounce - wait 1 second after user stops typing
       fetchTimeout = setTimeout(async () => {
         try {
