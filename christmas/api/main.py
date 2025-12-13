@@ -219,38 +219,54 @@ def fetch_product_image(request: FetchImageRequest):
         # Try multiple methods to find the product image
         # Method 1: Amazon-specific - look for main image
         if is_amazon:
-            # Try multiple Amazon image selectors
-            img_tag = soup.find('img', {'id': 'landingImage'}) or \
-                     soup.find('img', {'id': 'imgBlkFront'}) or \
-                     soup.find('img', {'data-old-hires': True}) or \
-                     soup.find('img', {'data-a-dynamic-image': True}) or \
-                     soup.find('div', {'id': 'imageBlock'})
+            # Try JSON-LD structured data first (most reliable for modern Amazon)
+            json_ld = soup.find('script', {'type': 'application/ld+json'})
+            if json_ld:
+                try:
+                    data = json.loads(json_ld.string)
+                    if isinstance(data, dict) and 'image' in data:
+                        img_data = data['image']
+                        if isinstance(img_data, str):
+                            image_url = img_data
+                        elif isinstance(img_data, list) and img_data:
+                            image_url = img_data[0]
+                except:
+                    pass
 
-            if img_tag:
-                # For div containers, find img inside
-                if img_tag.name == 'div':
-                    img_tag = img_tag.find('img')
+            # Try multiple Amazon image selectors
+            if not image_url:
+                img_tag = soup.find('img', {'id': 'landingImage'}) or \
+                         soup.find('img', {'id': 'imgBlkFront'}) or \
+                         soup.find('img', {'data-old-hires': True}) or \
+                         soup.find('img', {'data-a-dynamic-image': True}) or \
+                         soup.find('div', {'id': 'imageBlock'}) or \
+                         soup.find('div', {'id': 'imageBlockNew'})
 
                 if img_tag:
-                    # Try different attributes in order of quality
-                    image_url = img_tag.get('data-old-hires') or \
-                               img_tag.get('data-a-hires') or \
-                               img_tag.get('src') or \
-                               img_tag.get('data-src')
+                    # For div containers, find img inside
+                    if img_tag.name == 'div':
+                        img_tag = img_tag.find('img')
 
-                    # Extract from data-a-dynamic-image JSON if present
-                    if not image_url and img_tag.get('data-a-dynamic-image'):
-                        try:
-                            dynamic_images = json.loads(img_tag['data-a-dynamic-image'])
-                            if dynamic_images:
-                                # Get the largest image (first key usually has highest resolution)
-                                image_url = list(dynamic_images.keys())[0]
-                        except:
-                            pass
+                    if img_tag:
+                        # Try different attributes in order of quality
+                        image_url = img_tag.get('data-old-hires') or \
+                                   img_tag.get('data-a-hires') or \
+                                   img_tag.get('src') or \
+                                   img_tag.get('data-src')
 
-                    # Skip if URL looks like a placeholder
-                    if image_url and ('1x1' in image_url or 'pixel' in image_url.lower()):
-                        image_url = None
+                        # Extract from data-a-dynamic-image JSON if present
+                        if not image_url and img_tag.get('data-a-dynamic-image'):
+                            try:
+                                dynamic_images = json.loads(img_tag['data-a-dynamic-image'])
+                                if dynamic_images:
+                                    # Get the largest image (first key usually has highest resolution)
+                                    image_url = list(dynamic_images.keys())[0]
+                            except:
+                                pass
+
+                        # Skip if URL looks like a placeholder
+                        if image_url and ('1x1' in image_url or 'pixel' in image_url.lower() or 'sprite' in image_url.lower()):
+                            image_url = None
 
         # Method 2: Generic - look for og:image meta tag
         if not image_url:
@@ -274,19 +290,23 @@ def fetch_product_image(request: FetchImageRequest):
         if image_url.startswith('//'):
             image_url = 'https:' + image_url
 
-        # Download the image and convert to base64 to avoid hotlinking issues
-        try:
-            import base64
-            from PIL import Image
-            from io import BytesIO
+        # Validate that we actually found an image URL
+        if not image_url:
+            raise HTTPException(status_code=404, detail="Could not find product image on page")
 
+        # Download the image and convert to base64 to avoid hotlinking issues
+        import base64
+        from PIL import Image
+        from io import BytesIO
+
+        try:
             img_response = requests.get(image_url, headers=headers, timeout=10)
             img_response.raise_for_status()
 
             # Check if image is a placeholder (1x1 or very small)
             img = Image.open(BytesIO(img_response.content))
             if img.width <= 1 or img.height <= 1:
-                raise HTTPException(status_code=404, detail="Image is a 1x1 placeholder, not a real product image")
+                raise Exception("Image is a 1x1 placeholder")
 
             # Convert to base64 data URI
             content_type = img_response.headers.get('Content-Type', 'image/jpeg')
@@ -295,8 +315,8 @@ def fetch_product_image(request: FetchImageRequest):
 
             return {"image_url": data_uri}
         except Exception as download_error:
-            # If download fails, return the URL anyway and let frontend try
-            return {"image_url": image_url}
+            # If download/validation fails, don't return anything
+            raise HTTPException(status_code=404, detail=f"Could not download valid product image: {str(download_error)}")
 
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=400, detail=f"Failed to fetch URL: {str(e)}")
