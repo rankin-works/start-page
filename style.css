@@ -13,6 +13,19 @@
   --transition-fast: 180ms ease-out;
 }
 
+/* Light mode theme */
+[data-theme="light"] {
+  --bg: #f0f4f8;
+  --bg-soft: #e2e8f0;
+  --accent: #0891b2;
+  --accent-soft: rgba(8, 145, 178, 0.1);
+  --accent-strong: #ea580c;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --card-border: rgba(71, 85, 105, 0.2);
+  --shadow-soft: 0 18px 45px rgba(71, 85, 105, 0.15);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -29,6 +42,161 @@ body {
   justify-content: center;
   padding: 24px;
   cursor: none;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="light"] body {
+  background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f0f9ff 100%);
+}
+
+/* Light mode shell - make it invisible */
+[data-theme="light"] .shell {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+[data-theme="light"] .shell::before {
+  display: none;
+}
+
+/* Light mode intro panel */
+[data-theme="light"] .intro {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(248, 250, 252, 0.88)
+  );
+  border: 1px solid rgba(71, 85, 105, 0.25);
+}
+
+[data-theme="light"] .intro::before {
+  background: radial-gradient(circle at 0 0, rgba(8, 145, 178, 0.1), transparent 60%);
+}
+
+[data-theme="light"] .intro-badge,
+[data-theme="light"] .intro-datetime,
+[data-theme="light"] .tag {
+  background: rgba(241, 245, 249, 0.9);
+  border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+/* Light mode services panel */
+[data-theme="light"] .services-panel {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.9));
+  border: 1px solid rgba(71, 85, 105, 0.25);
+}
+
+/* Light mode service cards */
+[data-theme="light"] .service-card {
+  background: radial-gradient(circle at top left, rgba(248, 250, 252, 0.8), rgba(255, 255, 255, 1));
+  border: 1px solid rgba(71, 85, 105, 0.2);
+}
+
+[data-theme="light"] .service-card::before {
+  background: radial-gradient(circle at top center, rgba(8, 145, 178, 0.15), transparent 60%);
+}
+
+[data-theme="light"] .service-card:hover {
+  background: radial-gradient(circle at top left, rgba(219, 234, 254, 0.5), rgba(248, 250, 252, 0.96));
+  border-color: rgba(8, 145, 178, 0.6);
+  box-shadow: 0 18px 40px rgba(71, 85, 105, 0.2);
+}
+
+[data-theme="light"] .service-tag {
+  background: rgba(241, 245, 249, 0.95);
+  border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+/* Light mode metric cards */
+[data-theme="light"] .metric-card {
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid rgba(71, 85, 105, 0.2);
+}
+
+[data-theme="light"] .metric-card:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: var(--accent);
+}
+
+/* Light mode status indicators */
+[data-theme="light"] .status-indicator {
+  background: rgba(241, 245, 249, 0.9);
+  border: 1px solid rgba(100, 116, 139, 0.2);
+}
+
+/* Light mode meta pills */
+[data-theme="light"] .meta-pill {
+  background: radial-gradient(circle at top left, rgba(241, 245, 249, 0.9), transparent 60%);
+  border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+/* Light mode services title */
+[data-theme="light"] .services-title {
+  color: #1e293b;
+}
+
+/* Light mode icon filters - invert TrueNAS and Woodpecker icons */
+[data-theme="light"] .service-icon img[src$="TruenasLogo.svg"],
+[data-theme="light"] .service-icon img[src$="woodpecker-ci.svg"] {
+  filter: brightness(0) saturate(100%);
+}
+
+/* Keep cursor color consistent in light mode */
+[data-theme="light"] .cursor-dot {
+  background-color: #46bcc0 !important;
+  mix-blend-mode: normal !important;
+}
+
+[data-theme="light"] .cursor-outline {
+  border-color: rgba(70, 188, 192, 0.6) !important;
+}
+
+/* Theme toggle button styling */
+#theme-toggle {
+  cursor: none;
+  font-family: inherit;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.toggle-switch {
+  width: 32px;
+  height: 16px;
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 12px;
+  position: relative;
+  transition: background 0.3s ease;
+}
+
+.toggle-slider {
+  width: 12px;
+  height: 12px;
+  background: var(--text-muted);
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+/* Light mode - slider moves to the right */
+[data-theme="light"] .toggle-slider {
+  transform: translateX(16px);
+  background: var(--accent);
+}
+
+[data-theme="light"] .toggle-switch {
+  background: rgba(8, 145, 178, 0.2);
+}
+
+.theme-label {
+  padding: 3px;
+  font-size: inherit;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
 }
 
 /* Custom Cursor */
@@ -57,6 +225,22 @@ body {
   pointer-events: none;
   z-index: 9998;
   transition: all 0.15s ease;
+}
+
+/* Hide custom cursor on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .cursor-dot,
+  .cursor-outline {
+    display: none !important;
+  }
+
+  body {
+    cursor: auto !important;
+  }
+
+  a, button, [role="button"], input, textarea, select {
+    cursor: auto !important;
+  }
 }
 
 .cursor-outline.hover {

@@ -132,6 +132,43 @@
   });
 })();
 
+// Theme Toggle
+(function() {
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon = themeToggle.querySelector('.theme-icon');
+  const themeLabel = themeToggle.querySelector('.theme-label');
+  const htmlElement = document.documentElement;
+
+  // Get saved theme or default to dark
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+
+  // Apply saved theme on load
+  if (savedTheme === 'light') {
+    htmlElement.setAttribute('data-theme', 'light');
+    themeIcon.textContent = '☀️';
+    themeLabel.textContent = 'Light';
+  }
+
+  // Toggle theme on click
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = htmlElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+    if (newTheme === 'light') {
+      htmlElement.setAttribute('data-theme', 'light');
+      themeIcon.textContent = '☀️';
+      themeLabel.textContent = 'Light';
+    } else {
+      htmlElement.removeAttribute('data-theme');
+      themeIcon.textContent = '🌙';
+      themeLabel.textContent = 'Dark';
+    }
+
+    // Save theme preference
+    localStorage.setItem('theme', newTheme);
+  });
+})();
+
 // Live Date and Time Display
 (function() {
   function updateDateTime() {
