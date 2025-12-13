@@ -291,7 +291,7 @@ body {
   width: 120px;
   height: 120px;
   border-radius: 8px;
-  object-fit: cover;
+  object-fit: contain;
   background: rgba(148, 163, 184, 0.1);
   border: 1px solid var(--card-border);
 }

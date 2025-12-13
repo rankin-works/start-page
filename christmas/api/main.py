@@ -262,7 +262,21 @@ def fetch_product_image(request: FetchImageRequest):
         if image_url.startswith('//'):
             image_url = 'https:' + image_url
 
-        return {"image_url": image_url}
+        # Download the image and convert to base64 to avoid hotlinking issues
+        try:
+            import base64
+            img_response = requests.get(image_url, headers=headers, timeout=10)
+            img_response.raise_for_status()
+
+            # Convert to base64 data URI
+            content_type = img_response.headers.get('Content-Type', 'image/jpeg')
+            base64_image = base64.b64encode(img_response.content).decode('utf-8')
+            data_uri = f"data:{content_type};base64,{base64_image}"
+
+            return {"image_url": data_uri}
+        except Exception as download_error:
+            # If download fails, return the URL anyway and let frontend try
+            return {"image_url": image_url}
 
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=400, detail=f"Failed to fetch URL: {str(e)}")
