@@ -238,6 +238,38 @@ const API_BASE_URL = isLocalDevelopment
     }
   }
 
+  // Show custom alert
+  function showAlert(title, message) {
+    return new Promise((resolve) => {
+      const modal = document.getElementById('alert-modal');
+      const alertTitle = document.getElementById('alert-title');
+      const alertMessage = document.getElementById('alert-message');
+      const okBtn = document.getElementById('alert-ok');
+
+      alertTitle.textContent = title;
+      alertMessage.textContent = message;
+
+      modal.classList.add('active');
+      okBtn.focus();
+
+      const handleOk = () => {
+        modal.classList.remove('active');
+        okBtn.removeEventListener('click', handleOk);
+        document.removeEventListener('keydown', handleKeyPress);
+        resolve();
+      };
+
+      const handleKeyPress = (e) => {
+        if (e.key === 'Enter' || e.key === 'Escape') {
+          handleOk();
+        }
+      };
+
+      okBtn.addEventListener('click', handleOk);
+      document.addEventListener('keydown', handleKeyPress);
+    });
+  }
+
   // Show custom modal
   function showModal(title, subtitle, isUnclaim = false) {
     return new Promise((resolve, reject) => {
@@ -334,13 +366,13 @@ const API_BASE_URL = isLocalDevelopment
       }
 
       await loadItems();
-      alert(`Great! You've claimed this item. Jake won't see who claimed it unless he peeks!`);
+      await showAlert('Success!', `Great! You've claimed this item. Jake won't see who claimed it unless he peeks!`);
     } catch (error) {
       if (error === 'cancelled') {
         return; // User cancelled
       }
       console.error('Failed to claim item:', error);
-      alert('Failed to claim item. Please try again.');
+      await showAlert('Error', 'Failed to claim item. Please try again.');
     }
   }
 
@@ -359,7 +391,7 @@ const API_BASE_URL = isLocalDevelopment
 
       if (!response.ok) {
         if (response.status === 403) {
-          alert('Incorrect password. Only the person who claimed this item can unclaim it.\n\nIf you forgot the password, please contact Jake to remove it manually.');
+          await showAlert('Incorrect Password', 'Only the person who claimed this item can unclaim it. If you forgot the password, please contact Jake to remove it manually.');
         } else {
           throw new Error('Failed to unclaim item');
         }
@@ -367,13 +399,13 @@ const API_BASE_URL = isLocalDevelopment
       }
 
       await loadItems();
-      alert('Item unclaimed successfully!');
+      await showAlert('Success!', 'Item unclaimed successfully!');
     } catch (error) {
       if (error === 'cancelled') {
         return; // User cancelled
       }
       console.error('Failed to unclaim item:', error);
-      alert('Failed to unclaim item. Please try again.');
+      await showAlert('Error', 'Failed to unclaim item. Please try again.');
     }
   }
 
