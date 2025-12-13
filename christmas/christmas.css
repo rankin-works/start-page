@@ -372,7 +372,7 @@ body {
   font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
-  display: inline-block;
+  width: fit-content;
   margin-bottom: 4px;
 }
 
