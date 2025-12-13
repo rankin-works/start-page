@@ -25,23 +25,27 @@
 
     /* Snowfall effect */
     .snowflake {
-      position: fixed;
-      top: -10px;
-      z-index: 9999;
+      position: absolute;
+      top: -50px;
+      z-index: -1;
       user-select: none;
       pointer-events: none;
       color: white;
       font-size: 1em;
+      opacity: 0;
       animation: snowfall linear infinite;
     }
 
     @keyframes snowfall {
       0% {
         transform: translateY(0) translateX(0);
-        opacity: 1;
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.4;
       }
       80% {
-        opacity: 1;
+        opacity: 0.4;
       }
       100% {
         transform: translateY(100vh) translateX(var(--drift));
@@ -157,7 +161,7 @@
   <script>
     (function() {
       const snowflakeChars = ['❄', '❅', '❆'];
-      const snowflakeCount = 50;
+      const snowflakeCount = 25;
 
       function createSnowflake() {
         const snowflake = document.createElement('div');
@@ -179,8 +183,8 @@
         const drift = (Math.random() - 0.5) * 100;
         snowflake.style.setProperty('--drift', drift + 'px');
 
-        // Random delay to stagger the snowflakes
-        snowflake.style.animationDelay = Math.random() * 5 + 's';
+        // Random delay to stagger the snowflakes - start immediately so they're always moving
+        snowflake.style.animationDelay = '0s';
 
         document.body.appendChild(snowflake);
 

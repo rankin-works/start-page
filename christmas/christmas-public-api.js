@@ -1,9 +1,13 @@
 // Christmas List Public View (Read-Only) with API Backend
 
 // Configuration
-const API_BASE_URL = window.location.origin.includes('localhost') || window.location.origin.includes('5503')
+// Use production API when accessed through HTTPS proxy, otherwise use direct API for local development
+const isLocalDevelopment = window.location.origin.includes('localhost') ||
+                           (window.location.origin.includes('5503') && window.location.protocol === 'http:');
+
+const API_BASE_URL = isLocalDevelopment
   ? 'http://10.0.0.13:8000'
-  : window.location.origin + '/christmas';  // API is proxied at /christmas/api/*
+  : 'https://home.rankin.works/christmas';  // API is proxied at /christmas/api/*
 
 // Custom Cursor (from main site)
 (function() {
