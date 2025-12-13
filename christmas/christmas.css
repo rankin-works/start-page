@@ -1,5 +1,16 @@
 /* Christmas List Specific Styles */
 
+/* Override body centering for Christmas pages */
+body {
+  align-items: flex-start !important;
+  padding-top: 0 !important;
+  overflow-x: hidden !important;
+}
+
+.shell {
+  margin-top: 0;
+}
+
 .christmas-content {
   max-width: 900px;
   margin: 0 auto;
@@ -19,6 +30,7 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 8px;
+  white-space: nowrap;
 }
 
 .christmas-subtitle {
@@ -418,7 +430,7 @@
   }
 
   .christmas-title {
-    font-size: 2rem;
+    font-size: clamp(1.2rem, 5vw, 2rem);
   }
 
   .wishlist-header {
