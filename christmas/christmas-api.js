@@ -192,6 +192,15 @@ async function apiRequest(endpoint, options = {}) {
         } catch (error) {
           console.log('Could not auto-fetch image:', error);
           fetchedImageUrl = null;
+
+          // Show a helpful message
+          const imageLabel = document.querySelector('label[for="item-image"]');
+          if (imageLabel) {
+            imageLabel.textContent = 'Image (auto-fetch unavailable - upload manually)';
+            setTimeout(() => {
+              imageLabel.textContent = 'Image';
+            }, 4000);
+          }
         }
       }, 1000);
     } else {
