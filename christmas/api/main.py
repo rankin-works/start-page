@@ -224,16 +224,21 @@ def fetch_product_image(request: FetchImageRequest):
             # Try JSON-LD structured data first (most reliable for modern Amazon)
             json_ld = soup.find('script', {'type': 'application/ld+json'})
             if json_ld:
+                print(f"[IMAGE FETCH] Found JSON-LD script tag")
                 try:
                     data = json.loads(json_ld.string)
                     if isinstance(data, dict) and 'image' in data:
                         img_data = data['image']
                         if isinstance(img_data, str):
                             image_url = img_data
+                            print(f"[IMAGE FETCH] Found image from JSON-LD: {image_url}")
                         elif isinstance(img_data, list) and img_data:
                             image_url = img_data[0]
-                except:
-                    pass
+                            print(f"[IMAGE FETCH] Found image from JSON-LD array: {image_url}")
+                except Exception as e:
+                    print(f"[IMAGE FETCH] Failed to parse JSON-LD: {e}")
+            else:
+                print(f"[IMAGE FETCH] No JSON-LD found")
 
             # Try multiple Amazon image selectors
             if not image_url:
@@ -266,15 +271,22 @@ def fetch_product_image(request: FetchImageRequest):
                             except:
                                 pass
 
-                        # Skip if URL looks like a placeholder
-                        if image_url and ('1x1' in image_url or 'pixel' in image_url.lower() or 'sprite' in image_url.lower()):
+                        # Skip if URL looks like a placeholder or tracking pixel
+                        if image_url and ('1x1' in image_url or 'pixel' in image_url.lower() or
+                                        'sprite' in image_url.lower() or 'fls-na.amazon.com' in image_url or
+                                        'oc-csi' in image_url or '/OP/requestId' in image_url):
+                            print(f"[IMAGE FETCH] Skipping tracking/placeholder URL: {image_url}")
                             image_url = None
 
         # Method 2: Generic - look for og:image meta tag
         if not image_url:
+            print(f"[IMAGE FETCH] Trying og:image meta tag")
             og_image = soup.find('meta', property='og:image')
             if og_image:
                 image_url = og_image.get('content')
+                print(f"[IMAGE FETCH] Found og:image: {image_url}")
+            else:
+                print(f"[IMAGE FETCH] No og:image found")
 
         # Method 3: Look for largest image on page
         if not image_url:
