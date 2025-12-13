@@ -6,8 +6,6 @@ const API_BASE_URL = window.location.origin.includes('localhost') || window.loca
   : window.location.origin + '/christmas';  // API is proxied at /christmas/api/*
 
 // No authentication needed - protected by Cloudflare Zero Trust
-const API_USERNAME = 'jake';
-const API_PASSWORD = 'not-needed'; // Dummy password since Cloudflare handles auth
 
 // Custom Cursor (from main site)
 (function() {
@@ -112,18 +110,9 @@ async function apiRequest(endpoint, options = {}) {
     },
   };
 
-  // Add auth header for protected endpoints
-  if (options.requiresAuth && API_PASSWORD) {
-    const credentials = btoa(`${API_USERNAME}:${API_PASSWORD}`);
-    defaultOptions.headers['Authorization'] = `Basic ${credentials}`;
-  }
+  // No auth headers needed - Cloudflare Zero Trust handles authentication
 
   const response = await fetch(url, { ...defaultOptions, ...options });
-
-  if (response.status === 401) {
-    // Shouldn't happen since we're behind Cloudflare Zero Trust
-    throw new Error('API authentication failed');
-  }
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ detail: 'Unknown error' }));
@@ -269,8 +258,7 @@ async function apiRequest(endpoint, options = {}) {
     try {
       await apiRequest('/api/wishlist', {
         method: 'POST',
-        body: JSON.stringify(newItem),
-        requiresAuth: true
+        body: JSON.stringify(newItem)
       });
 
       form.reset();
@@ -296,8 +284,7 @@ async function apiRequest(endpoint, options = {}) {
   async function togglePurchased(itemId) {
     try {
       await apiRequest(`/api/wishlist/${itemId}/toggle-purchased`, {
-        method: 'PATCH',
-        requiresAuth: true
+        method: 'PATCH'
       });
       await loadItems();
     } catch (error) {
@@ -312,8 +299,7 @@ async function apiRequest(endpoint, options = {}) {
 
     try {
       await apiRequest(`/api/wishlist/${itemId}`, {
-        method: 'DELETE',
-        requiresAuth: true
+        method: 'DELETE'
       });
       await loadItems();
       showSuccess('Item deleted successfully!');
@@ -331,8 +317,7 @@ async function apiRequest(endpoint, options = {}) {
 
     try {
       await apiRequest('/api/wishlist', {
-        method: 'DELETE',
-        requiresAuth: true
+        method: 'DELETE'
       });
       await loadItems();
       showSuccess('Wishlist cleared!');
