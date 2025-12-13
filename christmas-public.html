@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jake's Christmas 2025 Christmas List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Christmas wishlist" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="assets/rw-favicon.svg" type="image/svg+xml" />
+
+  <link rel="stylesheet" href="style.css?v=__CACHE_BUST__" />
+  <link rel="stylesheet" href="christmas.css?v=__CACHE_BUST__" />
+  <style>
+    /* Public view specific styles */
+    .add-item-card {
+      display: none;
+    }
+    .item-actions {
+      display: none;
+    }
+    .wishlist-stats button {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Custom Cursor -->
+  <div class="cursor-dot" id="cursor-dot"></div>
+  <div class="cursor-outline" id="cursor-outline"></div>
+
+  <main class="shell" id="main-content">
+    <div class="shell-inner">
+      <header class="header">
+        <div class="brand">
+          <img class="brand-logo" src="assets/rankin-logo.svg" alt="Rankin Works logo" />
+        </div>
+
+        <div class="meta">
+          <div class="meta-pill" title="Christmas List">
+              <span class="emoji" aria-hidden="true">🎄</span>
+              <span>Wishlist</span>
+          </div>
+          <button id="menu-toggle" class="meta-pill meta-pill-link" title="Menu">
+            <span class="hamburger-icon">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Hamburger Menu Overlay -->
+      <div id="menu-backdrop" class="menu-backdrop">
+        <div id="menu-overlay" class="menu-overlay">
+          <div class="menu-content">
+          <button id="menu-close" class="menu-close" aria-label="Close menu">×</button>
+          <nav class="menu-items">
+            <button id="theme-toggle" class="menu-item" title="Toggle theme">
+              <div class="toggle-switch">
+                <div class="toggle-slider"></div>
+              </div>
+              <span class="theme-label">Dark Mode</span>
+            </button>
+
+            <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="menu-item">
+              <img src="assets/cloudflare.svg" alt="" class="menu-item-icon" />
+              <span>Cloudflare Dashboard</span>
+            </a>
+
+            <div class="menu-section">
+              <button id="projects-toggle" class="menu-item menu-item-toggle">
+                <span>Projects</span>
+                <span class="menu-arrow">▼</span>
+              </button>
+              <div id="projects-submenu" class="submenu">
+                <div>
+                  <div class="submenu-inner">
+                    <a href="https://dexa.rankin.works/" target="_blank" rel="noopener noreferrer" class="submenu-item">
+                      <span>Dexa Scan Analysis</span>
+                    </a>
+                    <a href="index.html" class="submenu-item">
+                      <span>Homelab Dashboard</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nav>
+          </div>
+        </div>
+      </div>
+
+      <header class="header-spacer">
+      </header>
+
+      <section class="christmas-content">
+        <div class="christmas-header">
+          <h1 class="christmas-title">Jake's Christmas Wishlist 2025</h1>
+          <p class="christmas-subtitle">Sorry for the late list, please feel no pressure to get me anything! I did however use this as an opportunity to learn to code my own Christmas List website (haha).</p>
+        </div>
+
+        <!-- Wishlist Items (Read-Only) -->
+        <div class="wishlist-container">
+          <div class="wishlist-header">
+            <h2>Wishlist</h2>
+            <div class="wishlist-stats">
+              <span id="item-count">0 items</span>
+            </div>
+          </div>
+          <div id="wishlist-items" class="wishlist-items">
+            <!-- Items will be inserted here -->
+          </div>
+          <div id="empty-state" class="empty-state">
+            <span class="empty-icon">🎁</span>
+            <p>The wishlist is empty</p>
+            <small>Check back soon!</small>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="christmas-public-api.js?v=__CACHE_BUST__"></script>
+</body>
+</html>

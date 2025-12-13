@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jake's Christmas 2025 Christmas List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Christmas wishlist manager" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="assets/rw-favicon.svg" type="image/svg+xml" />
+
+  <link rel="stylesheet" href="style.css?v=__CACHE_BUST__" />
+  <link rel="stylesheet" href="christmas.css?v=__CACHE_BUST__" />
+</head>
+
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Custom Cursor -->
+  <div class="cursor-dot" id="cursor-dot"></div>
+  <div class="cursor-outline" id="cursor-outline"></div>
+
+  <main class="shell" id="main-content">
+    <div class="shell-inner">
+      <header class="header">
+        <div class="brand">
+          <a href="index.html" style="text-decoration: none; color: inherit;">
+            <img class="brand-logo" src="assets/rankin-logo.svg" alt="Rankin Works logo" />
+          </a>
+        </div>
+
+        <div class="meta">
+          <div class="meta-pill" title="Christmas List">
+              <span class="emoji" aria-hidden="true">🎄</span>
+              <span>Wishlist</span>
+          </div>
+          <button id="menu-toggle" class="meta-pill meta-pill-link" title="Menu">
+            <span class="hamburger-icon">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Hamburger Menu Overlay -->
+      <div id="menu-backdrop" class="menu-backdrop">
+        <div id="menu-overlay" class="menu-overlay">
+          <div class="menu-content">
+          <button id="menu-close" class="menu-close" aria-label="Close menu">×</button>
+          <nav class="menu-items">
+            <button id="theme-toggle" class="menu-item" title="Toggle theme">
+              <div class="toggle-switch">
+                <div class="toggle-slider"></div>
+              </div>
+              <span class="theme-label">Dark Mode</span>
+            </button>
+
+            <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="menu-item">
+              <img src="assets/cloudflare.svg" alt="" class="menu-item-icon" />
+              <span>Cloudflare Dashboard</span>
+            </a>
+
+            <div class="menu-section">
+              <button id="projects-toggle" class="menu-item menu-item-toggle">
+                <span>Projects</span>
+                <span class="menu-arrow">▼</span>
+              </button>
+              <div id="projects-submenu" class="submenu">
+                <div>
+                  <div class="submenu-inner">
+                    <a href="https://dexa.rankin.works/" target="_blank" rel="noopener noreferrer" class="submenu-item">
+                      <span>Dexa Scan Analysis</span>
+                    </a>
+                    <a href="index.html" class="submenu-item">
+                      <span>Homelab Dashboard</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nav>
+          </div>
+        </div>
+      </div>
+
+      <header class="header-spacer">
+      </header>
+
+      <section class="christmas-content">
+        <div class="christmas-header">
+          <h1 class="christmas-title">Jake's Christmas Wishlist 2025</h1>
+          <p class="christmas-subtitle">Sorry for the late list, please feel no pressure to get me anything! I did however use this as an opportunity to learn to code my own Christmas List website (haha).</p>
+        </div>
+
+        <!-- Add Item Form -->
+        <div class="add-item-card">
+          <h2 class="add-item-title">Add New Item</h2>
+          <form id="add-item-form" class="add-item-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="item-name">Item Name *</label>
+                <input type="text" id="item-name" required placeholder="e.g., Mechanical Keyboard" />
+              </div>
+              <div class="form-group">
+                <label for="item-price">Price</label>
+                <input type="text" id="item-price" placeholder="$99.99" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="item-url">Product URL</label>
+                <input type="url" id="item-url" placeholder="https://amazon.com/..." />
+                <small>Paste Amazon, eBay, or other product link</small>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="item-priority">Priority</label>
+                <select id="item-priority">
+                  <option value="nice">Nice to Have</option>
+                  <option value="want" selected>Really Want</option>
+                  <option value="must">Must Have!</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="item-image">Image</label>
+                <input type="file" id="item-image" accept="image/*" />
+                <small>Upload a product image</small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="item-notes">Notes (optional)</label>
+              <textarea id="item-notes" rows="2" placeholder="Size, color preference, etc."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <span>+ Add to List</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Wishlist Items -->
+        <div class="wishlist-container">
+          <div class="wishlist-header">
+            <h2>Your Wishlist</h2>
+            <div class="wishlist-stats">
+              <span id="item-count">0 items</span>
+              <button id="clear-list-btn" class="btn btn-secondary btn-sm">Clear All</button>
+            </div>
+          </div>
+          <div id="wishlist-items" class="wishlist-items">
+            <!-- Items will be inserted here -->
+          </div>
+          <div id="empty-state" class="empty-state">
+            <span class="empty-icon">🎁</span>
+            <p>Your wishlist is empty</p>
+            <small>Add your first item above to get started!</small>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="christmas-api.js?v=__CACHE_BUST__"></script>
+</body>
+</html>

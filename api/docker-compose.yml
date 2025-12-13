@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  christmas-api:
+    build: .
+    container_name: christmas-wishlist-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/data
+    environment:
+      - DATA_FILE=/data/wishlist.json
+      - ADMIN_USERNAME=jake
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-changeme}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
