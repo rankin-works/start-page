@@ -132,10 +132,49 @@
   });
 })();
 
+// Hamburger Menu Toggle
+(function() {
+  const menuToggle = document.getElementById('menu-toggle');
+  const menuOverlay = document.getElementById('menu-overlay');
+  const menuClose = document.getElementById('menu-close');
+
+  // Open menu
+  menuToggle.addEventListener('click', () => {
+    menuOverlay.classList.add('active');
+  });
+
+  // Close menu
+  menuClose.addEventListener('click', () => {
+    menuOverlay.classList.remove('active');
+  });
+
+  // Close menu when clicking outside
+  menuOverlay.addEventListener('click', (e) => {
+    if (e.target === menuOverlay) {
+      menuOverlay.classList.remove('active');
+    }
+  });
+
+  // Close menu on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menuOverlay.classList.contains('active')) {
+      menuOverlay.classList.remove('active');
+    }
+  });
+
+  // Projects submenu toggle
+  const projectsToggle = document.getElementById('projects-toggle');
+  const projectsSubmenu = document.getElementById('projects-submenu');
+
+  projectsToggle.addEventListener('click', () => {
+    projectsToggle.classList.toggle('active');
+    projectsSubmenu.classList.toggle('active');
+  });
+})();
+
 // Theme Toggle
 (function() {
   const themeToggle = document.getElementById('theme-toggle');
-  const themeIcon = themeToggle.querySelector('.theme-icon');
   const themeLabel = themeToggle.querySelector('.theme-label');
   const htmlElement = document.documentElement;
 
@@ -145,8 +184,7 @@
   // Apply saved theme on load
   if (savedTheme === 'light') {
     htmlElement.setAttribute('data-theme', 'light');
-    themeIcon.textContent = '☀️';
-    themeLabel.textContent = 'Light';
+    themeLabel.textContent = 'Light Mode';
   }
 
   // Toggle theme on click
@@ -156,12 +194,10 @@
 
     if (newTheme === 'light') {
       htmlElement.setAttribute('data-theme', 'light');
-      themeIcon.textContent = '☀️';
-      themeLabel.textContent = 'Light';
+      themeLabel.textContent = 'Light Mode';
     } else {
       htmlElement.removeAttribute('data-theme');
-      themeIcon.textContent = '🌙';
-      themeLabel.textContent = 'Dark';
+      themeLabel.textContent = 'Dark Mode';
     }
 
     // Save theme preference
