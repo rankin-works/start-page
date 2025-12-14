@@ -36,6 +36,26 @@ console.log('Christmas API - Using API Base URL:', API_BASE_URL);
     cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
   });
 
+  // Hover effects for interactive elements
+  const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select');
+
+  interactiveElements.forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursorOutline.classList.add('hover');
+      cursorDot.style.transform = 'translate(-50%, -50%) scale(1.5)';
+    });
+
+    el.addEventListener('mouseleave', () => {
+      cursorOutline.classList.remove('hover');
+      cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+    });
+  });
+
+  document.addEventListener('mouseleave', () => {
+    cursorDot.style.opacity = '0';
+    cursorOutline.style.opacity = '0';
+  });
+
   document.addEventListener('mouseenter', () => {
     cursorDot.style.opacity = '1';
     cursorOutline.style.opacity = '1';
