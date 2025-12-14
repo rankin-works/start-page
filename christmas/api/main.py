@@ -44,6 +44,7 @@ class WishlistItem(BaseModel):
     price: Optional[str] = None
     url: Optional[str] = None
     priority: str = "want"  # nice, want, must
+    category: str = "other"  # electronics, gaming, clothing, books, home, sports, hobbies, health, toys, other
     notes: Optional[str] = None
     image: Optional[str] = None  # base64 encoded image
     purchased: bool = False
