@@ -976,9 +976,9 @@ select.sort-select {
 
 /* Snowfall effect */
 .snowflake {
-  position: fixed !important;
+  position: absolute !important;
   top: -50px;
-  z-index: 1 !important;
+  z-index: 0 !important;
   user-select: none;
   pointer-events: none;
   color: white;
