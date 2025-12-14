@@ -582,10 +582,14 @@ const API_BASE_URL = isLocalDevelopment
   // Load and display subtitle
   async function loadSubtitle() {
     try {
-      const response = await apiRequest('/api/settings');
+      const response = await fetch(`${API_BASE_URL}/api/settings`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch settings');
+      }
+      const data = await response.json();
       const subtitleText = document.getElementById('subtitle-text');
       if (subtitleText) {
-        subtitleText.textContent = response.subtitle;
+        subtitleText.textContent = data.subtitle;
       }
     } catch (error) {
       console.error('Failed to load subtitle:', error);
