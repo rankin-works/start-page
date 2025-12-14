@@ -797,9 +797,83 @@ async function apiRequest(endpoint, options = {}) {
   formatPriceInput(addPriceInput);
   formatPriceInput(editPriceInput);
 
+  // Load and display subtitle
+  async function loadSubtitle() {
+    try {
+      const response = await apiRequest('/api/settings');
+      const subtitleText = document.getElementById('subtitle-text');
+      if (subtitleText) {
+        subtitleText.textContent = response.subtitle;
+      }
+    } catch (error) {
+      console.error('Failed to load subtitle:', error);
+    }
+  }
+
+  // Edit subtitle functionality
+  const editSubtitleBtn = document.getElementById('edit-subtitle-btn');
+  const subtitleModal = document.getElementById('subtitle-modal');
+  const subtitleForm = document.getElementById('subtitle-form');
+  const subtitleInput = document.getElementById('subtitle-input');
+  const subtitleCancelBtn = document.getElementById('subtitle-cancel');
+
+  if (editSubtitleBtn) {
+    editSubtitleBtn.addEventListener('click', async () => {
+      // Load current subtitle
+      try {
+        const response = await apiRequest('/api/settings');
+        subtitleInput.value = response.subtitle;
+        subtitleModal.classList.add('active');
+        subtitleInput.focus();
+      } catch (error) {
+        console.error('Failed to load current subtitle:', error);
+      }
+    });
+  }
+
+  if (subtitleCancelBtn) {
+    subtitleCancelBtn.addEventListener('click', () => {
+      subtitleModal.classList.remove('active');
+    });
+  }
+
+  if (subtitleForm) {
+    subtitleForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const newSubtitle = subtitleInput.value.trim();
+      if (!newSubtitle) return;
+
+      try {
+        await apiRequest('/api/settings', {
+          method: 'PUT',
+          body: JSON.stringify({ subtitle: newSubtitle })
+        });
+
+        // Update display
+        document.getElementById('subtitle-text').textContent = newSubtitle;
+        subtitleModal.classList.remove('active');
+      } catch (error) {
+        console.error('Failed to update subtitle:', error);
+        showError('Failed to update subtitle. Please try again.');
+      }
+    });
+  }
+
+  // Close subtitle modal on backdrop click
+  if (subtitleModal) {
+    subtitleModal.addEventListener('click', (e) => {
+      if (e.target === subtitleModal) {
+        subtitleModal.classList.remove('active');
+      }
+    });
+  }
+
   // Initial load
+  loadSubtitle();
   loadItems();
 
   // Auto-refresh every 30 seconds to see changes from other devices
   setInterval(loadItems, 30000);
+  setInterval(loadSubtitle, 30000);
 })();

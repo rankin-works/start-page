@@ -31,6 +31,7 @@ app.add_middleware(
 
 # Configuration
 DATA_FILE = Path(os.getenv("DATA_FILE", "/data/wishlist.json"))
+SETTINGS_FILE = Path(os.getenv("SETTINGS_FILE", "/data/settings.json"))
 ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "jake")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "changeme")  # Change this!
 
@@ -56,6 +57,9 @@ class WishlistResponse(BaseModel):
     items: List[WishlistItem]
     count: int
 
+class Settings(BaseModel):
+    subtitle: str = "Sorry for the late list, please feel no pressure to get me anything listed here."
+
 # Helper functions
 def load_wishlist() -> List[dict]:
     """Load wishlist from JSON file"""
@@ -71,6 +75,21 @@ def save_wishlist(items: List[dict]):
     """Save wishlist to JSON file"""
     with open(DATA_FILE, 'w') as f:
         json.dump(items, f, indent=2)
+
+def load_settings() -> dict:
+    """Load settings from JSON file"""
+    if not SETTINGS_FILE.exists():
+        return {"subtitle": "Sorry for the late list, please feel no pressure to get me anything listed here."}
+    try:
+        with open(SETTINGS_FILE, 'r') as f:
+            return json.load(f)
+    except json.JSONDecodeError:
+        return {"subtitle": "Sorry for the late list, please feel no pressure to get me anything listed here."}
+
+def save_settings(settings: dict):
+    """Save settings to JSON file"""
+    with open(SETTINGS_FILE, 'w') as f:
+        json.dump(settings, f, indent=2)
 
 def verify_admin(credentials: HTTPBasicCredentials = Depends(security)):
     """Verify admin credentials for protected endpoints"""
@@ -388,6 +407,18 @@ def fetch_product_image(request: FetchImageRequest):
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
+
+@app.get("/api/settings", response_model=Settings)
+async def get_settings():
+    """Get current settings (public endpoint)"""
+    settings = load_settings()
+    return Settings(**settings)
+
+@app.put("/api/settings")
+async def update_settings(settings: Settings):
+    """Update settings (admin only - protected by Cloudflare Zero Trust)"""
+    save_settings(settings.dict())
+    return {"message": "Settings updated successfully", "settings": settings}
 
 if __name__ == "__main__":
     import uvicorn

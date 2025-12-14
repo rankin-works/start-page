@@ -578,4 +578,23 @@ const API_BASE_URL = isLocalDevelopment
     // Trigger re-render by dispatching custom event
     window.dispatchEvent(new CustomEvent('toggleClaims', { detail: { showClaims: claimsVisible } }));
   });
+
+  // Load and display subtitle
+  async function loadSubtitle() {
+    try {
+      const response = await apiRequest('/api/settings');
+      const subtitleText = document.getElementById('subtitle-text');
+      if (subtitleText) {
+        subtitleText.textContent = response.subtitle;
+      }
+    } catch (error) {
+      console.error('Failed to load subtitle:', error);
+    }
+  }
+
+  // Load subtitle on page load
+  loadSubtitle();
+
+  // Auto-refresh subtitle every 30 seconds
+  setInterval(loadSubtitle, 30000);
 })();
