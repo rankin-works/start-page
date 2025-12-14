@@ -380,7 +380,7 @@ const API_BASE_URL = isLocalDevelopment
     try {
       const { name, password } = await showModal(
         'Claim Item',
-        'Enter your name and set a password. You\'ll need this password to unclaim the item later.'
+        'Enter your name and set a password. You\'ll need this password if you need to unclaim later.'
       );
 
       const response = await fetch(`${API_BASE_URL}/api/wishlist/${itemId}/claim?claimed_by=${encodeURIComponent(name)}&password=${encodeURIComponent(password)}`, {
