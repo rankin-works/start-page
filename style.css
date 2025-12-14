@@ -31,9 +31,9 @@
 }
 
 html {
-  background: linear-gradient(135deg, #04070e 0%, #0d1435 50%, #040d18 100%);
-  background-attachment: fixed;
+  background-color: #04070e;
   min-height: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -42,7 +42,8 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
     "Segoe UI", sans-serif;
   background: linear-gradient(135deg, #04070e 0%, #0d1435 50%, #040d18 100%);
-  background-attachment: fixed;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
   color: var(--text-main);
   display: flex;
   align-items: center;
@@ -50,16 +51,32 @@ body {
   padding: 24px;
   cursor: none;
   transition: background 0.3s ease, color 0.3s ease;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #04070e 0%, #0d1435 50%, #040d18 100%);
+  z-index: -1;
 }
 
 [data-theme="light"] html {
-  background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f0f9ff 100%);
-  background-attachment: fixed;
+  background-color: #dbeafe;
 }
 
 [data-theme="light"] body {
   background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f0f9ff 100%);
-  background-attachment: fixed;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+[data-theme="light"] body::before {
+  background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f0f9ff 100%);
 }
 
 /* Light mode shell - make it invisible */
