@@ -112,10 +112,38 @@
 }
 
 /* Override body centering for Christmas pages */
+html {
+  background-color: #04070e !important;
+  overflow-x: hidden;
+}
+
 body {
   align-items: flex-start !important;
   padding-top: 0 !important;
   overflow-x: hidden !important;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #04070e 0%, #0d1435 50%, #040d18 100%) !important;
+  z-index: -1;
+}
+
+[data-theme="light"] html {
+  background-color: #dbeafe !important;
+}
+
+[data-theme="light"] body::before {
+  background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f0f9ff 100%) !important;
 }
 
 .shell {
