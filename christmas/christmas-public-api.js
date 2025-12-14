@@ -36,7 +36,7 @@ const API_BASE_URL = isLocalDevelopment
   animateOutline();
 
   // Hover effects for interactive elements
-  const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select');
+  const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select, .wishlist-item');
 
   interactiveElements.forEach(el => {
     el.addEventListener('mouseenter', () => {
