@@ -309,7 +309,23 @@ async function apiRequest(endpoint, options = {}) {
     }
 
     emptyState.classList.add('hidden');
-    itemCount.textContent = `${wishlistItems.length} item${wishlistItems.length !== 1 ? 's' : ''}`;
+
+    // Calculate total price
+    let total = 0;
+    let hasPrice = false;
+    wishlistItems.forEach((item) => {
+      if (item.price) {
+        const priceValue = parseFloat(item.price.replace(/[^0-9.]/g, ''));
+        if (!isNaN(priceValue)) {
+          total += priceValue;
+          hasPrice = true;
+        }
+      }
+    });
+
+    const itemCountText = `${wishlistItems.length} item${wishlistItems.length !== 1 ? 's' : ''}`;
+    const totalText = hasPrice ? ` totaling $${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '';
+    itemCount.textContent = itemCountText + totalText;
 
     wishlistItems.forEach((item) => {
       const itemEl = createItemElement(item);
@@ -489,6 +505,9 @@ async function apiRequest(endpoint, options = {}) {
     document.getElementById('edit-item-priority').value = item.priority;
     document.getElementById('edit-item-category').value = item.category || 'other';
     document.getElementById('edit-item-notes').value = item.notes || '';
+
+    // Clear the file input to prevent carrying over from previous edits
+    document.getElementById('edit-item-image').value = '';
 
     // Show modal
     modal.classList.add('active');
@@ -713,6 +732,70 @@ async function apiRequest(endpoint, options = {}) {
     // Save state to localStorage
     localStorage.setItem('addFormCollapsed', addItemCard.classList.contains('collapsed'));
   });
+
+  // Auto-add $ and commas to price inputs
+  function formatPriceInput(input) {
+    input.addEventListener('focus', (e) => {
+      const value = e.target.value.trim();
+      if (!value || value === '$') {
+        e.target.value = '$';
+      } else if (!value.startsWith('$')) {
+        e.target.value = '$' + value;
+      }
+    });
+
+    input.addEventListener('input', (e) => {
+      let value = e.target.value;
+
+      // Store cursor position
+      const cursorPosition = e.target.selectionStart;
+
+      // Remove all non-numeric characters except decimal point
+      const numericValue = value.replace(/[^0-9.]/g, '');
+
+      // Ensure only one decimal point
+      const parts = numericValue.split('.');
+      let integerPart = parts[0] || '';
+      let decimalPart = parts[1] || '';
+
+      // Limit decimal to 2 places
+      if (decimalPart.length > 2) {
+        decimalPart = decimalPart.substring(0, 2);
+      }
+
+      // Add commas to integer part
+      if (integerPart) {
+        integerPart = parseInt(integerPart, 10).toLocaleString('en-US');
+      }
+
+      // Build formatted value
+      let formatted = integerPart;
+      if (parts.length > 1) {
+        formatted += '.' + decimalPart;
+      }
+
+      // Add $ prefix
+      e.target.value = '$' + formatted;
+
+      // If only $ remains, keep it
+      if (e.target.value === '$') {
+        e.target.value = '$';
+      }
+    });
+
+    input.addEventListener('blur', (e) => {
+      const value = e.target.value.trim();
+      if (value === '$' || value === '') {
+        e.target.value = '';
+      }
+    });
+  }
+
+  const addPriceInput = document.getElementById('item-price');
+  const editPriceInput = document.getElementById('edit-item-price');
+
+  formatPriceInput(addPriceInput);
+  formatPriceInput(editPriceInput);
 
   // Initial load
   loadItems();

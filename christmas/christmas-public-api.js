@@ -207,7 +207,23 @@ const API_BASE_URL = isLocalDevelopment
     }
 
     emptyState.classList.add('hidden');
-    itemCount.textContent = `${wishlistItems.length} item${wishlistItems.length !== 1 ? 's' : ''}`;
+
+    // Calculate total price
+    let total = 0;
+    let hasPrice = false;
+    wishlistItems.forEach((item) => {
+      if (item.price) {
+        const priceValue = parseFloat(item.price.replace(/[^0-9.]/g, ''));
+        if (!isNaN(priceValue)) {
+          total += priceValue;
+          hasPrice = true;
+        }
+      }
+    });
+
+    const itemCountText = `${wishlistItems.length} item${wishlistItems.length !== 1 ? 's' : ''}`;
+    const totalText = hasPrice ? ` totaling $${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '';
+    itemCount.textContent = itemCountText + totalText;
 
     wishlistItems.forEach((item) => {
       const itemEl = createItemElement(item);
