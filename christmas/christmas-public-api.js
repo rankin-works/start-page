@@ -380,7 +380,7 @@ const API_BASE_URL = isLocalDevelopment
     try {
       const { name, password } = await showModal(
         'Claim Item',
-        'Enter your name and set a password. You\'ll need this password if you need to unclaim later.'
+        'Enter your name and set a password. You\'ll need this password if you need to unclaim later. Don\'t worry, Jake won\'t peek at claimed items. 😉'
       );
 
       const response = await fetch(`${API_BASE_URL}/api/wishlist/${itemId}/claim?claimed_by=${encodeURIComponent(name)}&password=${encodeURIComponent(password)}`, {
@@ -392,7 +392,7 @@ const API_BASE_URL = isLocalDevelopment
       }
 
       await loadItems();
-      await showAlert('Success!', `Great! You've claimed this item. Jake won't see who claimed it unless he peeks!`);
+      await showAlert('Success!', `Great! You've claimed this item. Jake won't see who claimed it unless he peeks! But he won't. Because he doesn't want to spoil the surprise. 😇`);
     } catch (error) {
       if (error === 'cancelled') {
         return; // User cancelled
