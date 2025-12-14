@@ -411,8 +411,17 @@ def fetch_product_image(request: FetchImageRequest):
 @app.get("/api/settings", response_model=Settings)
 async def get_settings():
     """Get current settings (public endpoint)"""
+    from fastapi.responses import JSONResponse
     settings = load_settings()
-    return Settings(**settings)
+    # Don't cache settings - always get fresh data
+    return JSONResponse(
+        content=Settings(**settings).dict(),
+        headers={
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0"
+        }
+    )
 
 @app.put("/api/settings")
 async def update_settings(settings: Settings):
