@@ -14,22 +14,26 @@ const API_BASE_URL = isLocalDevelopment
   const cursorDot = document.getElementById('cursor-dot');
   const cursorOutline = document.getElementById('cursor-outline');
 
+  let mouseX = 0;
+  let mouseY = 0;
+  let outlineX = 0;
+  let outlineY = 0;
+
   document.addEventListener('mousemove', (e) => {
-    cursorDot.style.left = e.clientX + 'px';
-    cursorDot.style.top = e.clientY + 'px';
-    cursorOutline.style.left = e.clientX + 'px';
-    cursorOutline.style.top = e.clientY + 'px';
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    cursorDot.style.left = mouseX + 'px';
+    cursorDot.style.top = mouseY + 'px';
   });
 
-  document.addEventListener('mousedown', () => {
-    cursorDot.style.transform = 'translate(-50%, -50%) scale(0.8)';
-    cursorOutline.style.transform = 'translate(-50%, -50%) scale(0.8)';
-  });
-
-  document.addEventListener('mouseup', () => {
-    cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
-    cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
-  });
+  function animateOutline() {
+    outlineX += (mouseX - outlineX) * 0.15;
+    outlineY += (mouseY - outlineY) * 0.15;
+    cursorOutline.style.left = (outlineX - 16) + 'px';
+    cursorOutline.style.top = (outlineY - 16) + 'px';
+    requestAnimationFrame(animateOutline);
+  }
+  animateOutline();
 
   // Hover effects for interactive elements
   const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select');
@@ -37,12 +41,12 @@ const API_BASE_URL = isLocalDevelopment
   interactiveElements.forEach(el => {
     el.addEventListener('mouseenter', () => {
       cursorOutline.classList.add('hover');
-      cursorDot.style.transform = 'translate(-50%, -50%) scale(1.5)';
+      cursorDot.style.transform = 'scale(1.5)';
     });
 
     el.addEventListener('mouseleave', () => {
       cursorOutline.classList.remove('hover');
-      cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+      cursorDot.style.transform = 'scale(1)';
     });
   });
 
