@@ -139,17 +139,65 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.add-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.add-item-card.collapsed .add-item-header {
+  margin-bottom: 0;
+}
+
 .add-item-title {
   font-size: 1.3rem;
   font-weight: 600;
   color: var(--text-main);
-  margin-bottom: 20px;
+  margin: 0;
+}
+
+.toggle-add-btn {
+  background: none;
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: none;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-add-btn:hover {
+  border-color: var(--accent);
+  background: rgba(70, 188, 192, 0.1);
+}
+
+.toggle-arrow {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.add-item-card.collapsed .toggle-arrow {
+  transform: rotate(-90deg);
 }
 
 .add-item-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-height: 1000px;
+  overflow: hidden;
+  opacity: 1;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.add-item-card.collapsed .add-item-form {
+  max-height: 0;
+  opacity: 0;
 }
 
 .form-row {

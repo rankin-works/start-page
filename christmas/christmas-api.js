@@ -595,6 +595,22 @@ async function apiRequest(endpoint, options = {}) {
     renderItems();
   });
 
+  // Toggle Add Item Form
+  const toggleAddBtn = document.getElementById('toggle-add-form');
+  const addItemCard = document.querySelector('.add-item-card');
+
+  // Check localStorage for saved state (default to expanded)
+  const isCollapsed = localStorage.getItem('addFormCollapsed') === 'true';
+  if (isCollapsed) {
+    addItemCard.classList.add('collapsed');
+  }
+
+  toggleAddBtn.addEventListener('click', () => {
+    addItemCard.classList.toggle('collapsed');
+    // Save state to localStorage
+    localStorage.setItem('addFormCollapsed', addItemCard.classList.contains('collapsed'));
+  });
+
   // Initial load
   loadItems();
 
