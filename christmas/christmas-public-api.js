@@ -51,19 +51,33 @@ const API_BASE_URL = isLocalDevelopment
   });
 
   // Use event delegation for dynamically added wishlist items
-  document.addEventListener('mouseenter', (e) => {
-    if (e.target.closest('.wishlist-item')) {
-      cursorOutline.classList.add('hover');
-      cursorDot.style.transform = 'scale(1.5)';
-    }
-  }, true);
+  // Use mouseover/mouseout instead of mouseenter/mouseleave for proper bubbling
+  let currentHoveredItem = null;
 
-  document.addEventListener('mouseleave', (e) => {
-    if (e.target.closest('.wishlist-item')) {
-      cursorOutline.classList.remove('hover');
-      cursorDot.style.transform = 'scale(1)';
+  document.addEventListener('mouseover', (e) => {
+    if (e.target && typeof e.target.closest === 'function') {
+      const item = e.target.closest('.wishlist-item');
+      if (item && item !== currentHoveredItem) {
+        currentHoveredItem = item;
+        cursorOutline.classList.add('hover');
+        cursorDot.style.transform = 'scale(1.5)';
+      }
     }
-  }, true);
+  });
+
+  document.addEventListener('mouseout', (e) => {
+    if (e.target && typeof e.target.closest === 'function') {
+      const item = e.target.closest('.wishlist-item');
+      if (item && item === currentHoveredItem) {
+        // Check if we're actually leaving the item
+        if (!item.contains(e.relatedTarget)) {
+          currentHoveredItem = null;
+          cursorOutline.classList.remove('hover');
+          cursorDot.style.transform = 'scale(1)';
+        }
+      }
+    }
+  });
 
   document.addEventListener('mouseleave', () => {
     cursorDot.style.opacity = '0';
