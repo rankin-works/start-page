@@ -243,6 +243,7 @@ async function apiRequest(endpoint, options = {}) {
     try {
       const response = await apiRequest('/api/wishlist');
       wishlistItems = response.items;
+      console.log('Loaded items:', wishlistItems);
       sortItems();
       renderItems();
     } catch (error) {
@@ -263,6 +264,15 @@ async function apiRequest(endpoint, options = {}) {
           const priorityA = priorityOrder[a.priority] || 999;
           const priorityB = priorityOrder[b.priority] || 999;
           return priorityA - priorityB;
+        });
+        break;
+
+      case 'category':
+        // Sort alphabetically by category
+        sortedItems.sort((a, b) => {
+          const categoryA = a.category || 'other';
+          const categoryB = b.category || 'other';
+          return categoryA.localeCompare(categoryB);
         });
         break;
 
@@ -336,11 +346,11 @@ async function apiRequest(endpoint, options = {}) {
       : '';
 
     const priceEl = item.price
-      ? `<span class="item-price">${item.price}${faviconEl ? ' ' + faviconEl : ''}</span>`
-      : (faviconEl ? `<span class="item-price">${faviconEl}</span>` : '');
+      ? `<span class="item-price">${item.price}</span>`
+      : '';
 
     const linkEl = item.url
-      ? `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="item-link">View Product →</a>`
+      ? `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="item-link">View Product ${faviconEl}</a>`
       : '';
 
     const notesEl = item.notes
@@ -353,15 +363,37 @@ async function apiRequest(endpoint, options = {}) {
       must: 'Must Have!'
     };
 
+    const categoryLabels = {
+      electronics: 'Electronics',
+      gaming: 'Gaming',
+      clothing: 'Clothing & Accessories',
+      books: 'Books & Media',
+      home: 'Home & Kitchen',
+      sports: 'Sports & Outdoors',
+      hobbies: 'Hobbies & Crafts',
+      health: 'Health & Beauty',
+      toys: 'Toys & Games',
+      giftcards: 'Gift Cards',
+      other: 'Other'
+    };
+
+    const category = item.category || 'other';
+    const categoryBadge = `<span class="category-badge category-${category}">${categoryLabels[category] || category}</span>`;
+
     div.innerHTML = `
-      ${imageEl}
+      <div class="item-image-column">
+        <div class="item-image-section">
+          ${imageEl}
+        </div>
+        ${linkEl}
+      </div>
       <div class="item-details">
         <div class="item-header">
           <h3 class="item-name">${escapeHtml(item.name)}</h3>
           ${priceEl}
         </div>
+        ${categoryBadge}
         <span class="priority-badge priority-${item.priority}">${priorityLabels[item.priority]}</span>
-        ${linkEl}
         ${notesEl}
       </div>
       <div class="item-actions">
@@ -392,6 +424,7 @@ async function apiRequest(endpoint, options = {}) {
     const price = document.getElementById('item-price').value.trim();
     const url = document.getElementById('item-url').value.trim();
     const priority = document.getElementById('item-priority').value;
+    const category = document.getElementById('item-category').value;
     const notes = document.getElementById('item-notes').value.trim();
     const imageFile = document.getElementById('item-image').files[0];
 
@@ -409,10 +442,13 @@ async function apiRequest(endpoint, options = {}) {
       price,
       url,
       priority,
+      category,
       notes,
       image: imageData,
       purchased: false
     };
+
+    console.log('Adding new item with category:', category, 'Full item:', newItem);
 
     try {
       await apiRequest('/api/wishlist', {
@@ -451,6 +487,7 @@ async function apiRequest(endpoint, options = {}) {
     document.getElementById('edit-item-price').value = item.price || '';
     document.getElementById('edit-item-url').value = item.url || '';
     document.getElementById('edit-item-priority').value = item.priority;
+    document.getElementById('edit-item-category').value = item.category || 'other';
     document.getElementById('edit-item-notes').value = item.notes || '';
 
     // Show modal
@@ -464,6 +501,7 @@ async function apiRequest(endpoint, options = {}) {
       const price = document.getElementById('edit-item-price').value.trim();
       const url = document.getElementById('edit-item-url').value.trim();
       const priority = document.getElementById('edit-item-priority').value;
+      const category = document.getElementById('edit-item-category').value;
       const notes = document.getElementById('edit-item-notes').value.trim();
       const imageFile = document.getElementById('edit-item-image').files[0];
 
@@ -480,6 +518,7 @@ async function apiRequest(endpoint, options = {}) {
         price,
         url,
         priority,
+        category,
         notes,
         image: imageData,
         purchased: item.purchased,
@@ -487,6 +526,8 @@ async function apiRequest(endpoint, options = {}) {
         claim_password: item.claim_password,
         created_at: item.created_at
       };
+
+      console.log('Updating item with category:', category, 'Full item:', updatedItem);
 
       try {
         await apiRequest(`/api/wishlist/${item.id}`, {
@@ -538,7 +579,12 @@ async function apiRequest(endpoint, options = {}) {
 
   // Delete item
   async function deleteItem(itemId) {
-    if (!confirm('Are you sure you want to delete this item?')) return;
+    const confirmed = await showConfirm(
+      'Delete Item',
+      'Are you sure you want to delete this item? This action cannot be undone.'
+    );
+
+    if (!confirmed) return;
 
     try {
       await apiRequest(`/api/wishlist/${itemId}`, {
@@ -552,11 +598,68 @@ async function apiRequest(endpoint, options = {}) {
     }
   }
 
+  // Show confirmation modal
+  function showConfirm(title, message) {
+    return new Promise((resolve) => {
+      const modal = document.getElementById('confirm-modal');
+      const confirmTitle = document.getElementById('confirm-title');
+      const confirmMessage = document.getElementById('confirm-message');
+      const cancelBtn = document.getElementById('confirm-cancel');
+      const okBtn = document.getElementById('confirm-ok');
+
+      confirmTitle.textContent = title;
+      confirmMessage.textContent = message;
+      modal.classList.add('active');
+      okBtn.focus();
+
+      const handleConfirm = () => {
+        modal.classList.remove('active');
+        cleanup();
+        resolve(true);
+      };
+
+      const handleCancel = () => {
+        modal.classList.remove('active');
+        cleanup();
+        resolve(false);
+      };
+
+      const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+          handleCancel();
+        }
+      };
+
+      const handleBackdropClick = (e) => {
+        if (e.target === modal) {
+          handleCancel();
+        }
+      };
+
+      const cleanup = () => {
+        okBtn.removeEventListener('click', handleConfirm);
+        cancelBtn.removeEventListener('click', handleCancel);
+        modal.removeEventListener('click', handleBackdropClick);
+        document.removeEventListener('keydown', handleEscape);
+      };
+
+      okBtn.addEventListener('click', handleConfirm);
+      cancelBtn.addEventListener('click', handleCancel);
+      modal.addEventListener('click', handleBackdropClick);
+      document.addEventListener('keydown', handleEscape);
+    });
+  }
+
   // Clear all items
   clearListBtn.addEventListener('click', async () => {
     if (wishlistItems.length === 0) return;
 
-    if (!confirm('Are you sure you want to clear your entire wishlist? This cannot be undone.')) return;
+    const confirmed = await showConfirm(
+      'Clear Wishlist',
+      'Are you sure you want to clear your entire wishlist? This cannot be undone.'
+    );
+
+    if (!confirmed) return;
 
     try {
       await apiRequest('/api/wishlist', {
@@ -599,8 +702,8 @@ async function apiRequest(endpoint, options = {}) {
   const toggleAddBtn = document.getElementById('toggle-add-form');
   const addItemCard = document.querySelector('.add-item-card');
 
-  // Check localStorage for saved state (default to expanded)
-  const isCollapsed = localStorage.getItem('addFormCollapsed') === 'true';
+  // Check localStorage for saved state (default to collapsed)
+  const isCollapsed = localStorage.getItem('addFormCollapsed') !== 'false';
   if (isCollapsed) {
     addItemCard.classList.add('collapsed');
   }

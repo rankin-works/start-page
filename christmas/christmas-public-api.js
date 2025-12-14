@@ -165,6 +165,15 @@ const API_BASE_URL = isLocalDevelopment
         });
         break;
 
+      case 'category':
+        // Sort alphabetically by category
+        sortedItems.sort((a, b) => {
+          const categoryA = a.category || 'other';
+          const categoryB = b.category || 'other';
+          return categoryA.localeCompare(categoryB);
+        });
+        break;
+
       case 'name':
         sortedItems.sort((a, b) => a.name.localeCompare(b.name));
         break;
@@ -427,11 +436,11 @@ const API_BASE_URL = isLocalDevelopment
       : '';
 
     const priceEl = item.price
-      ? `<span class="item-price">${item.price}${faviconEl ? ' ' + faviconEl : ''}</span>`
-      : (faviconEl ? `<span class="item-price">${faviconEl}</span>` : '');
+      ? `<span class="item-price">${item.price}</span>`
+      : '';
 
     const linkEl = item.url
-      ? `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="item-link">View Product →</a>`
+      ? `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="item-link">View Product ${faviconEl}</a>`
       : '';
 
     const notesEl = item.notes
@@ -449,15 +458,37 @@ const API_BASE_URL = isLocalDevelopment
       must: 'Must Have!'
     };
 
+    const categoryLabels = {
+      electronics: 'Electronics',
+      gaming: 'Gaming',
+      clothing: 'Clothing & Accessories',
+      books: 'Books & Media',
+      home: 'Home & Kitchen',
+      sports: 'Sports & Outdoors',
+      hobbies: 'Hobbies & Crafts',
+      health: 'Health & Beauty',
+      toys: 'Toys & Games',
+      giftcards: 'Gift Cards',
+      other: 'Other'
+    };
+
+    const category = item.category || 'other';
+    const categoryBadge = `<span class="category-badge category-${category}">${categoryLabels[category] || category}</span>`;
+
     div.innerHTML = `
-      ${imageEl}
+      <div class="item-image-column">
+        <div class="item-image-section">
+          ${imageEl}
+        </div>
+        ${linkEl}
+      </div>
       <div class="item-details">
         <div class="item-header">
           <h3 class="item-name">${escapeHtml(item.name)}</h3>
           ${priceEl}
         </div>
+        ${categoryBadge}
         <span class="priority-badge priority-${item.priority}">${priorityLabels[item.priority]}</span>
-        ${linkEl}
         ${notesEl}
         ${claimedByEl}
       </div>

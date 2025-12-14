@@ -9,8 +9,8 @@
   <!-- Favicon -->
   <link rel="icon" href="../assets/rw-favicon.svg" type="image/svg+xml" />
 
-  <link rel="stylesheet" href="../style.css?v=__CACHE_BUST__" />
-  <link rel="stylesheet" href="christmas.css?v=__CACHE_BUST__" />
+  <link rel="stylesheet" href="../style.css?v=1765672862" />
+  <link rel="stylesheet" href="christmas.css?v=1765672862" />
   <style>
     /* Public view specific styles */
     .add-item-card {
@@ -93,6 +93,24 @@
       font-size: 0.9rem;
       color: var(--text-muted);
       margin-bottom: 24px;
+    }
+
+    /* Light mode - better contrast for modal */
+    [data-theme="light"] .modal-content {
+      background: rgba(255, 255, 255, 0.98);
+      border: 1px solid rgba(71, 85, 105, 0.3);
+    }
+
+    [data-theme="light"] .modal-title {
+      color: #0f172a;
+    }
+
+    [data-theme="light"] .modal-subtitle {
+      color: #475569;
+    }
+
+    [data-theme="light"] .modal-form-group label {
+      color: #1e293b;
     }
 
     .modal-form {
@@ -325,6 +343,7 @@
               <select id="sort-select" class="sort-select">
                 <option value="default">Sort by: Default</option>
                 <option value="priority">Sort by: Priority</option>
+                <option value="category">Sort by: Category</option>
                 <option value="name">Sort by: Name</option>
                 <option value="price">Sort by: Price</option>
               </select>
@@ -347,7 +366,7 @@
     </div>
   </main>
 
-  <script src="christmas-public-api.js?v=__CACHE_BUST__"></script>
+  <script src="christmas-public-api.js?v=1765672862"></script>
 
   <!-- Snowfall Effect -->
   <script>

@@ -45,7 +45,31 @@
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.modal-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted);
   margin-bottom: 24px;
+}
+
+/* Light mode - better contrast for modal */
+[data-theme="light"] .modal-content {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+[data-theme="light"] .modal-title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .modal-subtitle {
+  color: #475569;
+}
+
+[data-theme="light"] .form-group label {
+  color: #1e293b;
 }
 
 .modal-buttons {
@@ -216,6 +240,7 @@ body {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-main);
+  cursor: none;
 }
 
 .form-group input,
@@ -256,6 +281,7 @@ body {
 
 [data-theme="light"] .form-group select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2346bcc0' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
   background-position: right 12px center;
 }
 
@@ -294,7 +320,7 @@ body {
 /* Style file input */
 .form-group input[type="file"] {
   padding: 8px;
-  cursor: pointer;
+  cursor: none;
 }
 
 .form-group input[type="file"]::file-selector-button {
@@ -303,7 +329,7 @@ body {
   color: white;
   border: none;
   border-radius: 6px;
-  cursor: pointer;
+  cursor: none;
   font-weight: 600;
   margin-right: 12px;
   transition: all 0.3s ease;
@@ -445,6 +471,7 @@ select.sort-select {
 
 [data-theme="light"] select.sort-select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2346bcc0' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
   background-position: right 12px center;
 }
 
@@ -471,7 +498,7 @@ select.sort-select {
 
 .wishlist-item {
   display: grid;
-  grid-template-columns: 120px 1fr auto;
+  grid-template-columns: auto 1fr auto;
   gap: 16px;
   padding: 16px;
   background: rgba(15, 23, 42, 0.3);
@@ -479,6 +506,24 @@ select.sort-select {
   border-radius: 12px;
   transition: all 0.3s ease;
   position: relative;
+}
+
+.item-image-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.item-image-section {
+  width: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(148, 163, 184, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 120px;
 }
 
 [data-theme="light"] .wishlist-item {
@@ -511,10 +556,7 @@ select.sort-select {
 .item-image {
   width: 120px;
   height: 120px;
-  border-radius: 8px;
   object-fit: contain;
-  background: rgba(148, 163, 184, 0.1);
-  border: 1px solid var(--card-border);
 }
 
 .item-image.placeholder {
@@ -583,18 +625,118 @@ select.sort-select {
   color: #ef4444;
 }
 
+.category-badge {
+  padding: 3px 10px;
+  border-radius: 14px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  width: fit-content;
+  margin-bottom: 4px;
+  background: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.category-electronics {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.category-gaming {
+  background: rgba(168, 85, 247, 0.15);
+  color: #a855f7;
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+.category-clothing {
+  background: rgba(236, 72, 153, 0.15);
+  color: #ec4899;
+  border-color: rgba(236, 72, 153, 0.3);
+}
+
+.category-books {
+  background: rgba(251, 146, 60, 0.15);
+  color: #fb923c;
+  border-color: rgba(251, 146, 60, 0.3);
+}
+
+.category-home {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.category-sports {
+  background: rgba(14, 165, 233, 0.15);
+  color: #0ea5e9;
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+.category-hobbies {
+  background: rgba(217, 70, 239, 0.15);
+  color: #d946ef;
+  border-color: rgba(217, 70, 239, 0.3);
+}
+
+.category-health {
+  background: rgba(236, 72, 153, 0.15);
+  color: #ec4899;
+  border-color: rgba(236, 72, 153, 0.3);
+}
+
+.category-toys {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.category-giftcards {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.category-other {
+  background: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
 .item-link {
-  color: var(--accent);
-  text-decoration: none;
-  font-size: 0.85rem;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
-  transition: all 0.2s ease;
+  padding: 6px 12px;
+  background: rgba(70, 188, 192, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(70, 188, 192, 0.3);
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: none;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-align: center;
 }
 
 .item-link:hover {
-  text-decoration: underline;
+  background: rgba(70, 188, 192, 0.2);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(70, 188, 192, 0.2);
+}
+
+[data-theme="light"] .item-link {
+  background: rgba(70, 188, 192, 0.08);
+  border-color: rgba(70, 188, 192, 0.25);
+}
+
+[data-theme="light"] .item-link:hover {
+  background: rgba(70, 188, 192, 0.15);
+  border-color: var(--accent);
 }
 
 .item-notes {
@@ -710,15 +852,47 @@ select.sort-select {
   }
 
   .wishlist-item {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .item-image-column {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .item-image-section {
+    width: 100%;
+    min-height: 200px;
   }
 
   .item-image {
-    width: 100%;
+    max-width: 100%;
+    max-height: 300px;
+    width: auto;
+    height: auto;
+  }
+
+  .item-image.placeholder {
+    width: 200px;
     height: 200px;
+    font-size: 4rem;
+  }
+
+  .item-link {
+    width: fit-content;
+    margin: 0 auto;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .item-details {
+    order: 1;
   }
 
   .item-actions {
+    order: 2;
     flex-direction: row;
     justify-content: flex-start;
   }
@@ -768,5 +942,41 @@ select.sort-select {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+  }
+}
+
+/* Snowfall effect */
+.snowflake {
+  position: absolute;
+  top: -50px;
+  z-index: -1;
+  user-select: none;
+  pointer-events: none;
+  color: white;
+  font-size: 1em;
+  opacity: 0;
+  animation: snowfall linear infinite;
+}
+
+/* Light mode - ice blue snowflakes */
+[data-theme="light"] .snowflake {
+  color: #0ea5e9;
+  text-shadow: 0 0 4px rgba(14, 165, 233, 0.3);
+}
+
+@keyframes snowfall {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.4;
+  }
+  80% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(100vh) translateX(var(--drift));
+    opacity: 0;
   }
 }
