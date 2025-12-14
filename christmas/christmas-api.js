@@ -41,7 +41,7 @@ console.log('Christmas API - Using API Base URL:', API_BASE_URL);
   animateOutline();
 
   // Hover effects for interactive elements
-  const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select, .wishlist-item');
+  const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select');
 
   interactiveElements.forEach(el => {
     el.addEventListener('mouseenter', () => {
@@ -54,6 +54,21 @@ console.log('Christmas API - Using API Base URL:', API_BASE_URL);
       cursorDot.style.transform = 'scale(1)';
     });
   });
+
+  // Use event delegation for dynamically added wishlist items
+  document.addEventListener('mouseenter', (e) => {
+    if (e.target.closest('.wishlist-item')) {
+      cursorOutline.classList.add('hover');
+      cursorDot.style.transform = 'scale(1.5)';
+    }
+  }, true);
+
+  document.addEventListener('mouseleave', (e) => {
+    if (e.target.closest('.wishlist-item')) {
+      cursorOutline.classList.remove('hover');
+      cursorDot.style.transform = 'scale(1)';
+    }
+  }, true);
 
   document.addEventListener('mouseleave', () => {
     cursorDot.style.opacity = '0';
