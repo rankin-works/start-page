@@ -586,10 +586,10 @@ a, button, [role="button"], input, textarea, select {
 }
 
 .meta-pill {
-  padding: 6px 10px;
-  border-radius: 999px;
+  padding: 8.7px 20px;
+  border-radius: 30px;
   border: 1px solid rgba(148, 163, 184, 0.4);
-  background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.2), transparent 60%);
+  background: none;
   display: inline-flex;
   align-items: center;
   gap: 6px;
