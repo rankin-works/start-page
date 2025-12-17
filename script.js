@@ -335,14 +335,6 @@
    * Update system metrics display
    */
   function updateSystemMetrics(systemData) {
-    // Add flash animation to indicate refresh
-    const metricsContainer = document.getElementById('system-metrics');
-    if (metricsContainer) {
-      metricsContainer.classList.add('refreshing');
-      setTimeout(() => {
-        metricsContainer.classList.remove('refreshing');
-      }, 500);
-    }
 
     // Update CPU usage
     const cpuElement = document.getElementById('cpu-usage');
