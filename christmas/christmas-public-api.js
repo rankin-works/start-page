@@ -93,27 +93,39 @@ const API_BASE_URL = isLocalDevelopment
 // Hamburger Menu Toggle (from main site)
 (function() {
   const menuToggle = document.getElementById('menu-toggle');
+  const menuContainer = menuToggle.closest('.menu-container');
   const menuBackdrop = document.getElementById('menu-backdrop');
-  const menuOverlay = document.getElementById('menu-overlay');
   const menuClose = document.getElementById('menu-close');
 
-  menuToggle.addEventListener('click', () => {
+  function openMenu() {
+    menuContainer.classList.add('active');
     menuBackdrop.classList.add('active');
-  });
+  }
 
-  menuClose.addEventListener('click', () => {
+  function closeMenu() {
+    menuContainer.classList.remove('active');
     menuBackdrop.classList.remove('active');
-  });
+  }
 
-  menuBackdrop.addEventListener('click', (e) => {
-    if (e.target === menuBackdrop) {
-      menuBackdrop.classList.remove('active');
+  menuToggle.addEventListener('click', () => {
+    if (menuContainer.classList.contains('active')) {
+      closeMenu();
+    } else {
+      openMenu();
     }
   });
 
+  menuClose.addEventListener('click', () => {
+    closeMenu();
+  });
+
+  menuBackdrop.addEventListener('click', () => {
+    closeMenu();
+  });
+
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menuBackdrop.classList.contains('active')) {
-      menuBackdrop.classList.remove('active');
+    if (e.key === 'Escape' && menuContainer.classList.contains('active')) {
+      closeMenu();
     }
   });
 
@@ -143,9 +155,9 @@ const API_BASE_URL = isLocalDevelopment
 
   if (savedTheme === 'light') {
     htmlElement.setAttribute('data-theme', 'light');
-    themeLabel.textContent = 'Light Mode';
-  } else {
     themeLabel.textContent = 'Dark Mode';
+  } else {
+    themeLabel.textContent = 'Light Mode';
   }
 
   themeToggle.addEventListener('click', () => {
@@ -154,10 +166,10 @@ const API_BASE_URL = isLocalDevelopment
 
     if (newTheme === 'light') {
       htmlElement.setAttribute('data-theme', 'light');
-      themeLabel.textContent = 'Light Mode';
+      themeLabel.textContent = 'Dark Mode';
     } else {
       htmlElement.removeAttribute('data-theme');
-      themeLabel.textContent = 'Dark Mode';
+      themeLabel.textContent = 'Light Mode';
     }
 
     localStorage.setItem('theme', newTheme);
