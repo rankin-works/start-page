@@ -135,31 +135,43 @@
 // Hamburger Menu Toggle
 (function() {
   const menuToggle = document.getElementById('menu-toggle');
+  const menuContainer = menuToggle.closest('.menu-container');
   const menuBackdrop = document.getElementById('menu-backdrop');
-  const menuOverlay = document.getElementById('menu-overlay');
   const menuClose = document.getElementById('menu-close');
+
+  function openMenu() {
+    menuContainer.classList.add('active');
+    menuBackdrop.classList.add('active');
+  }
+
+  function closeMenu() {
+    menuContainer.classList.remove('active');
+    menuBackdrop.classList.remove('active');
+  }
 
   // Open menu
   menuToggle.addEventListener('click', () => {
-    menuBackdrop.classList.add('active');
+    if (menuContainer.classList.contains('active')) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
   });
 
   // Close menu
   menuClose.addEventListener('click', () => {
-    menuBackdrop.classList.remove('active');
+    closeMenu();
   });
 
   // Close menu when clicking on backdrop (outside menu)
-  menuBackdrop.addEventListener('click', (e) => {
-    if (e.target === menuBackdrop) {
-      menuBackdrop.classList.remove('active');
-    }
+  menuBackdrop.addEventListener('click', () => {
+    closeMenu();
   });
 
   // Close menu on escape key
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menuBackdrop.classList.contains('active')) {
-      menuBackdrop.classList.remove('active');
+    if (e.key === 'Escape' && menuContainer.classList.contains('active')) {
+      closeMenu();
     }
   });
 
@@ -191,9 +203,9 @@
   // Apply theme on load
   if (savedTheme === 'light') {
     htmlElement.setAttribute('data-theme', 'light');
-    themeLabel.textContent = 'Light Mode';
-  } else {
     themeLabel.textContent = 'Dark Mode';
+  } else {
+    themeLabel.textContent = 'Light Mode';
   }
 
   // Toggle theme on click
@@ -203,10 +215,10 @@
 
     if (newTheme === 'light') {
       htmlElement.setAttribute('data-theme', 'light');
-      themeLabel.textContent = 'Light Mode';
+      themeLabel.textContent = 'Dark Mode';
     } else {
       htmlElement.removeAttribute('data-theme');
-      themeLabel.textContent = 'Dark Mode';
+      themeLabel.textContent = 'Light Mode';
     }
 
     // Save theme preference
@@ -596,4 +608,62 @@
     getStatusServiceUrl,
     STATUS_SERVICE_URL
   };
+})();
+
+// Service Info Popup Handler
+(function() {
+  const infoButtons = document.querySelectorAll('.service-info-btn');
+  const infoPopups = document.querySelectorAll('.service-info-popup');
+
+  if (infoButtons.length === 0) return;
+
+  // Close all popups
+  function closeAllPopups() {
+    infoPopups.forEach(popup => popup.classList.remove('active'));
+  }
+
+  // Handle info button clicks
+  infoButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const card = btn.closest('.service-card');
+      const popup = card.querySelector('.service-info-popup');
+
+      if (!popup) return;
+
+      const isActive = popup.classList.contains('active');
+
+      // Close all popups first
+      closeAllPopups();
+
+      // Toggle the clicked popup
+      if (!isActive) {
+        popup.classList.add('active');
+      }
+    });
+  });
+
+  // Close popups when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.service-info-btn') && !e.target.closest('.service-info-popup')) {
+      closeAllPopups();
+    }
+  });
+
+  // Close popups on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAllPopups();
+    }
+  });
+
+  // Prevent popup clicks from navigating
+  infoPopups.forEach(popup => {
+    popup.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  });
 })();

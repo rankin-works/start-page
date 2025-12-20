@@ -43,56 +43,56 @@
           <a href="https://help.rankin.works/" target="_blank" rel="noopener noreferrer" class="meta-pill meta-pill-link" title="Homelab Documentation">
               <span>Documentation</span>
           </a>
-          <button id="menu-toggle" class="meta-pill meta-pill-link" title="Menu">
-            <span class="hamburger-icon">
-              <span></span>
-              <span></span>
-              <span></span>
-            </span>
-          </button>
-        </div>
-      </header>
-
-      <!-- Hamburger Menu Overlay -->
-      <div id="menu-backdrop" class="menu-backdrop">
-        <div id="menu-overlay" class="menu-overlay">
-          <div class="menu-content">
-          <button id="menu-close" class="menu-close" aria-label="Close menu">×</button>
-          <nav class="menu-items">
-            <button id="theme-toggle" class="menu-item" title="Toggle theme">
-              <div class="toggle-switch">
-                <div class="toggle-slider"></div>
-              </div>
-              <span class="theme-label">Dark Mode</span>
+          <div class="menu-container">
+            <button id="menu-toggle" class="meta-pill meta-pill-link" title="Menu">
+              <span class="hamburger-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
             </button>
+            <!-- Hamburger Menu Dropdown -->
+            <div id="menu-backdrop" class="menu-backdrop"></div>
+            <div id="menu-overlay" class="menu-overlay">
+              <div class="menu-content">
+                <button id="menu-close" class="menu-close" aria-label="Close menu">×</button>
+                <nav class="menu-items">
+                  <button id="theme-toggle" class="menu-item" title="Toggle theme">
+                    <div class="toggle-switch">
+                      <div class="toggle-slider"></div>
+                    </div>
+                    <span class="theme-label">Dark Mode</span>
+                  </button>
 
-            <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="menu-item">
-              <img src="assets/cloudflare.svg" alt="" class="menu-item-icon" />
-              <span>Cloudflare Dashboard</span>
-            </a>
+                  <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="menu-item">
+                    <img src="assets/cloudflare.svg" alt="" class="menu-item-icon" />
+                    <span>Cloudflare Dashboard</span>
+                  </a>
 
-            <div class="menu-section">
-              <button id="projects-toggle" class="menu-item menu-item-toggle">
-                <span>Projects</span>
-                <span class="menu-arrow">▼</span>
-              </button>
-              <div id="projects-submenu" class="submenu">
-                <div>
-                  <div class="submenu-inner">
-                    <a href="christmas/christmas.html" class="submenu-item">
-                      <span>Christmas List</span>
-                    </a>
-                    <a href="https://dexa.rankin.works/" target="_blank" rel="noopener noreferrer" class="submenu-item">
-                      <span>Dexa Scan Analysis</span>
-                    </a>
+                  <div class="menu-section">
+                    <button id="projects-toggle" class="menu-item menu-item-toggle">
+                      <span>Projects</span>
+                      <span class="menu-arrow">▼</span>
+                    </button>
+                    <div id="projects-submenu" class="submenu">
+                      <div>
+                        <div class="submenu-inner">
+                          <a href="christmas/christmas.html" class="submenu-item">
+                            <span>Christmas List</span>
+                          </a>
+                          <a href="https://dexa.rankin.works/" target="_blank" rel="noopener noreferrer" class="submenu-item">
+                            <span>Dexa Scan Analysis</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </nav>
               </div>
             </div>
-          </nav>
           </div>
         </div>
-      </div>
+      </header>
 
       <header class="header-spacer">
       </header>
@@ -204,11 +204,13 @@
 
           <div class="services-grid">
             <!-- NAS -->
-            <a class="service-card" 
-               href="https://nas.rankin.works" 
-               target="_blank" 
+            <a class="service-card"
+               href="https://nas.rankin.works"
+               target="_blank"
                rel="noopener noreferrer"
                data-service-url="https://nas.rankin.works"
+               data-internal-url="https://10.0.0.13:443"
+               data-nas-path="System root (TrueNAS OS)"
                aria-label="Open TrueNAS Dashboard at nas.rankin.works (opens in new tab)">
               <div class="service-status">
                 <div class="status-indicator" data-status="checking">
@@ -228,14 +230,24 @@
               <div class="service-meta">
                 <span class="service-tag">TrueNAS · Dashboard</span>
               </div>
+              <button class="service-info-btn" aria-label="Service info">
+                <img src="assets/info-circle.svg" alt="" />
+              </button>
+              <div class="service-info-popup">
+                <div class="info-row"><span class="info-label">External</span><span class="info-value">https://nas.rankin.works</span></div>
+                <div class="info-row"><span class="info-label">Internal</span><span class="info-value">https://10.0.0.13:443</span></div>
+                <div class="info-row"><span class="info-label">Path</span><span class="info-value">System root (TrueNAS OS)</span></div>
+              </div>
             </a>
 
             <!-- Code -->
-            <a class="service-card" 
-               href="https://code.rankin.works" 
-               target="_blank" 
+            <a class="service-card"
+               href="https://code.rankin.works"
+               target="_blank"
                rel="noopener noreferrer"
                data-service-url="https://code.rankin.works"
+               data-internal-url="http://10.0.0.13:8081"
+               data-nas-path="/mnt/NAS/apps/code-server"
                aria-label="Open VS Code Server at code.rankin.works (opens in new tab)">
               <div class="service-status">
                 <div class="status-indicator" data-status="checking">
@@ -255,14 +267,24 @@
               <div class="service-meta">
                 <span class="service-tag">IDE · Dev</span>
               </div>
+              <button class="service-info-btn" aria-label="Service info">
+                <img src="assets/info-circle.svg" alt="" />
+              </button>
+              <div class="service-info-popup">
+                <div class="info-row"><span class="info-label">External</span><span class="info-value">https://code.rankin.works</span></div>
+                <div class="info-row"><span class="info-label">Internal</span><span class="info-value">http://10.0.0.13:8081</span></div>
+                <div class="info-row"><span class="info-label">Path</span><span class="info-value">/mnt/NAS/apps/code-server</span></div>
+              </div>
             </a>
 
             <!-- Git -->
-            <a class="service-card" 
-               href="https://git.rankin.works" 
-               target="_blank" 
+            <a class="service-card"
+               href="https://git.rankin.works"
+               target="_blank"
                rel="noopener noreferrer"
                data-service-url="https://git.rankin.works"
+               data-internal-url="http://10.0.0.13:3000"
+               data-nas-path="/mnt/NAS/gitea-repos"
                aria-label="Open Gitea repositories at git.rankin.works (opens in new tab)">
               <div class="service-status">
                 <div class="status-indicator" data-status="checking">
@@ -282,14 +304,24 @@
               <div class="service-meta">
                 <span class="service-tag">Repos · Gitea</span>
               </div>
+              <button class="service-info-btn" aria-label="Service info">
+                <img src="assets/info-circle.svg" alt="" />
+              </button>
+              <div class="service-info-popup">
+                <div class="info-row"><span class="info-label">External</span><span class="info-value">https://git.rankin.works</span></div>
+                <div class="info-row"><span class="info-label">Internal</span><span class="info-value">http://10.0.0.13:3000</span></div>
+                <div class="info-row"><span class="info-label">Path</span><span class="info-value">/mnt/NAS/gitea-repos</span></div>
+              </div>
             </a>
 
             <!-- Woodpecker CI -->
-            <a class="service-card" 
-               href="https://ci.rankin.works" 
-               target="_blank" 
+            <a class="service-card"
+               href="https://ci.rankin.works"
+               target="_blank"
                rel="noopener noreferrer"
                data-service-url="https://ci.rankin.works"
+               data-internal-url="http://10.0.0.13:30166"
+               data-nas-path="/mnt/.ix-apps/app_mounts/woodpecker-ci"
                aria-label="Open Woodpecker CI pipelines at ci.rankin.works (opens in new tab)">
               <div class="service-status">
                 <div class="status-indicator" data-status="checking">
@@ -309,14 +341,24 @@
               <div class="service-meta">
                 <span class="service-tag">CI · Pipelines</span>
               </div>
+              <button class="service-info-btn" aria-label="Service info">
+                <img src="assets/info-circle.svg" alt="" />
+              </button>
+              <div class="service-info-popup">
+                <div class="info-row"><span class="info-label">External</span><span class="info-value">https://ci.rankin.works</span></div>
+                <div class="info-row"><span class="info-label">Internal</span><span class="info-value">http://10.0.0.13:30166</span></div>
+                <div class="info-row"><span class="info-label">Path</span><span class="info-value">/mnt/.ix-apps/app_mounts/woodpecker-ci</span></div>
+              </div>
             </a>
 
             <!-- MC -->
-            <a class="service-card" 
-               href="https://mc.rankin.works" 
-               target="_blank" 
+            <a class="service-card"
+               href="https://mc.rankin.works"
+               target="_blank"
                rel="noopener noreferrer"
                data-service-url="https://mc.rankin.works"
+               data-internal-url="https://10.0.0.13:30146"
+               data-nas-path="/mnt/.ix-apps/app_mounts/crafty-4"
                aria-label="Open Minecraft server dashboard at mc.rankin.works (opens in new tab)">
               <div class="service-status">
                 <div class="status-indicator" data-status="checking">
@@ -336,14 +378,24 @@
               <div class="service-meta">
                 <span class="service-tag">Server · Dashboard</span>
               </div>
+              <button class="service-info-btn" aria-label="Service info">
+                <img src="assets/info-circle.svg" alt="" />
+              </button>
+              <div class="service-info-popup">
+                <div class="info-row"><span class="info-label">External</span><span class="info-value">https://mc.rankin.works</span></div>
+                <div class="info-row"><span class="info-label">Internal</span><span class="info-value">https://10.0.0.13:30146</span></div>
+                <div class="info-row"><span class="info-label">Path</span><span class="info-value">/mnt/.ix-apps/app_mounts/crafty-4</span></div>
+              </div>
             </a>
 
             <!-- Dev -->
-            <a class="service-card" 
-               href="https://dev.rankin.works" 
-               target="_blank" 
+            <a class="service-card"
+               href="https://dev.rankin.works"
+               target="_blank"
                rel="noopener noreferrer"
                data-service-url="https://dev.rankin.works"
+               data-internal-url="http://10.0.0.13:5173"
+               data-nas-path="/mnt/NAS/devprojects"
                aria-label="Open development environment at dev.rankin.works (opens in new tab)">
               <div class="service-status">
                 <div class="status-indicator" data-status="checking">
@@ -361,14 +413,24 @@
               <div class="service-meta">
                 <span class="service-tag">Staging</span>
               </div>
+              <button class="service-info-btn" aria-label="Service info">
+                <img src="assets/info-circle.svg" alt="" />
+              </button>
+              <div class="service-info-popup">
+                <div class="info-row"><span class="info-label">External</span><span class="info-value">https://dev.rankin.works</span></div>
+                <div class="info-row"><span class="info-label">Internal</span><span class="info-value">http://10.0.0.13:5173</span></div>
+                <div class="info-row"><span class="info-label">Path</span><span class="info-value">/mnt/NAS/devprojects</span></div>
+              </div>
             </a>
 
           <!-- Pi-hole -->
-            <a class="service-card" 
-               href="https://pi.rankin.works" 
-               target="_blank" 
+            <a class="service-card"
+               href="https://pi.rankin.works"
+               target="_blank"
                rel="noopener noreferrer"
                data-service-url="https://pi.rankin.works"
+               data-internal-url="http://10.0.0.13:20720"
+               data-nas-path="/mnt/.ix-apps/app_mounts/pihole"
                aria-label="Open Pi-hole DNS filtering at pi.rankin.works (opens in new tab)">
               <div class="service-status">
                 <div class="status-indicator" data-status="checking">
@@ -387,6 +449,52 @@
               </div>
               <div class="service-meta">
                 <span class="service-tag">DNS · Filtering</span>
+              </div>
+              <button class="service-info-btn" aria-label="Service info">
+                <img src="assets/info-circle.svg" alt="" />
+              </button>
+              <div class="service-info-popup">
+                <div class="info-row"><span class="info-label">External</span><span class="info-value">https://pi.rankin.works</span></div>
+                <div class="info-row"><span class="info-label">Internal</span><span class="info-value">http://10.0.0.13:20720</span></div>
+                <div class="info-row"><span class="info-label">Path</span><span class="info-value">/mnt/.ix-apps/app_mounts/pihole</span></div>
+              </div>
+            </a>
+
+            <!-- Glances -->
+            <a class="service-card"
+               href="https://glances.rankin.works"
+               target="_blank"
+               rel="noopener noreferrer"
+               data-service-url="https://glances.rankin.works"
+               data-internal-url="http://10.0.0.13:30015"
+               data-nas-path="No persistent storage (monitoring only)"
+               aria-label="Open Glances system monitoring at glances.rankin.works (opens in new tab)">
+              <div class="service-status">
+                <div class="status-indicator" data-status="checking">
+                  <div class="status-dot"></div>
+                  <span class="status-text">Checking...</span>
+                </div>
+              </div>
+              <div class="service-main">
+                <div class="service-icon">
+                  <img src="assets/glances-light.svg" alt="" loading="lazy" class="icon-dark" />
+                  <img src="assets/glances.svg" alt="" loading="lazy" class="icon-light" />
+                </div>
+                <div class="service-text">
+                  <div class="service-name">Glances</div>
+                  <div class="service-subdomain">glances.rankin.works</div>
+                </div>
+              </div>
+              <div class="service-meta">
+                <span class="service-tag">Monitoring · Metrics</span>
+              </div>
+              <button class="service-info-btn" aria-label="Service info">
+                <img src="assets/info-circle.svg" alt="" />
+              </button>
+              <div class="service-info-popup">
+                <div class="info-row"><span class="info-label">External</span><span class="info-value">https://glances.rankin.works</span></div>
+                <div class="info-row"><span class="info-label">Internal</span><span class="info-value">http://10.0.0.13:30015</span></div>
+                <div class="info-row"><span class="info-label">Path</span><span class="info-value">No persistent storage (monitoring only)</span></div>
               </div>
             </a>
           </div>
