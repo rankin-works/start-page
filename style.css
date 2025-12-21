@@ -1201,6 +1201,7 @@ a, button, [role="button"], input, textarea, select {
 .service-card:nth-child(6) { animation-delay: 1.0s; animation-fill-mode: forwards; }
 .service-card:nth-child(7) { animation-delay: 1.1s; animation-fill-mode: forwards; }
 .service-card:nth-child(8) { animation-delay: 1.2s; animation-fill-mode: forwards; }
+.service-card:nth-child(9) { animation-delay: 1.3s; animation-fill-mode: forwards; }
 
 /* Service Info Button */
 .service-info-btn {
